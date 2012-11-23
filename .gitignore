@@ -1,3 +1,6 @@
 *~
 *.war
 out/**/*
+.idea/**/*
+.idea
+out
