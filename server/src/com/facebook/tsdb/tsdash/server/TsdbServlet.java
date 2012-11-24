@@ -42,8 +42,8 @@ public class TsdbServlet extends HttpServlet {
             .getLogger("com.facebook.tsdb.services");
 
     private static final long serialVersionUID = 1L;
-    public static final String PROPERTIES_FILE = "conf/tsdash.properties";
-    public static final String LOG4J_PROPERTIES_FILE = "conf/log4j.properties";
+    public static final String PROPERTIES_FILE = "/etc/tsdash/tsdash.properties";
+    public static final String LOG4J_PROPERTIES_FILE = "/etc/tsdash/log4j.properties";
 
     public static final String URL_PATTERN_PARAM = "plot.tsdash.urlpattern";
     public static final String DEFAULT_URL_PATTERN = "http://%h:%p/plots/%f";
@@ -66,9 +66,9 @@ public class TsdbServlet extends HttpServlet {
             plotsDir = tsdbConf.getProperty(PLOTS_DIR_PARAM, DEFAULT_PLOTS_DIR);
             logger.info("Plots are being written to: " + plotsDir);
         } catch (FileNotFoundException e) {
-            System.err.println("Cannot find " + PROPERTIES_FILE);
+            System.err.println("Cannot find $CATALINA_BASE"  + PROPERTIES_FILE);
         } catch (IOException e) {
-            System.err.println("Cannot read " + PROPERTIES_FILE);
+            System.err.println("Cannot find $CATALINA_BASE"  + PROPERTIES_FILE);
         }
     }
 
