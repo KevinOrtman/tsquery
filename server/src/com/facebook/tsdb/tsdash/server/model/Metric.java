@@ -228,6 +228,7 @@ public class Metric {
 
     public void alignAllTimeSeries() {
         long cycle = guessTimeCycle();
+
         // wrap the time stamps to a multiple of cycle
         for (ArrayList<DataPoint> points : timeSeries.values()) {
             for (DataPoint p : points) {
@@ -307,59 +308,68 @@ public class Metric {
      * @throws IDNotFoundException
      * @throws IOException
      */
-    public Metric dissolveTags(ArrayList<String> tagsName,
-            String aggregatorName)
+    public Metric dissolveTags(ArrayList<String> tagsName, String aggregatorName)
             throws IOException, IDNotFoundException {
+
         if (tagsName.size() == 0) {
             return this;
         }
+
         HashMap<String, HashSet<String>> tagsSet = getTagsSet();
         for (String tagName : tagsName) {
             if (!tagsSet.containsKey(tagName)) {
-                // TODO: throw an exception here
-                logger.error("Dissolve error: tag '" + tagName
-                        + "' is not part of the tag set");
+                logger.error("Dissolve error: tag '" + tagName + "' is not part of the tag set");
                 return null;
             }
             // we can only dissolve once a given tag
             if (dissolvedTags.contains(tagName)) {
-                // TODO: throw an exception here
                 logger.error("Metric already dissolved tag " + tagName);
                 return null;
             }
         }
         // this aligns the time series in a perfect grid
-        alignAllTimeSeries();
+        // alignAllTimeSeries();
 
         Metric newData = new Metric(id, name, idMap);
-        Tag[] toDissolve = new Tag[tagsName.size()];
-        for (int i = 0; i < toDissolve.length; i++) {
-            toDissolve[i] = new Tag(tagsName.get(i), idMap);
-            newData.dissolvedTags.add(tagsName.get(i));
+
+        // TODO kevin
+        // gonna play with this logic to flip the disolve
+        // I want to return ONLY the "disolved" tag, will clean up
+        // later to make this clear from the API
+        Tag[] toDissolve = new Tag[tagsSet.size()  - tagsName.size()];
+        int counter=0;
+        for (String key : tagsSet.keySet()) {
+            if(!tagsName.contains(key)) {
+                toDissolve[counter++] = new Tag(key, idMap);
+                newData.dissolvedTags.add(key);
+            }
         }
-        TreeMap<TagsArray, ArrayList<ArrayList<DataPoint>>> dissolved =
-            new TreeMap<TagsArray, ArrayList<ArrayList<DataPoint>>>(
-                Tag.arrayComparator());
+
+        TreeMap<TagsArray, ArrayList<ArrayList<DataPoint>>> dissolved = new TreeMap<TagsArray, ArrayList<ArrayList<DataPoint>>>(Tag.arrayComparator());
+
         // sort the tags we will dissolve for calling disableTags()
         Arrays.sort(toDissolve, Tag.keyComparator());
         for (TagsArray header : timeSeries.keySet()) {
             TagsArray dissolvedRowTags = header.copy();
             if (toDissolve.length == 1) {
                 dissolvedRowTags.disableTag(toDissolve[0]);
-            } else {
+            }
+            else {
                 dissolvedRowTags.disableTags(toDissolve);
             }
+
             if (!dissolved.containsKey(dissolvedRowTags)) {
-                dissolved.put(dissolvedRowTags,
-                        new ArrayList<ArrayList<DataPoint>>());
+                dissolved.put(dissolvedRowTags, new ArrayList<ArrayList<DataPoint>>());
             }
-            dissolved.get(dissolvedRowTags).add(timeSeries.get(header));
+
+            ArrayList<DataPoint> points = timeSeries.get(header);
+            dissolved.get(dissolvedRowTags).add(points);
         }
+
         Aggregator aggregator = getAggregator(aggregatorName);
         newData.aggregatorName = aggregatorName;
         for (TagsArray header : dissolved.keySet()) {
-            newData.timeSeries.put(header,
-                    TimeSeries.aggregate(dissolved.get(header), aggregator));
+            newData.timeSeries.put(header, TimeSeries.aggregate(dissolved.get(header), aggregator));
         }
         return newData;
     }
