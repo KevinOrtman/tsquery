@@ -52,8 +52,10 @@ public class HBaseDataProvider implements TsdbDataProvider {
         dataTable = HBaseConnection.getDataTableConn();
     }
 
-    private void pickDataPoints(ArrayList<DataPoint> dataPoints,
-            RowRange rowRange, byte[] rowKey, Map<byte[], byte[]> cells) {
+    private ArrayList<DataPoint> pickDataPoints(RowRange rowRange, byte[] rowKey, Map<byte[], byte[]> cells) {
+
+        ArrayList<DataPoint> dataPoints = new ArrayList<DataPoint>();
+
         boolean first = Bytes.startsWith(rowKey, rowRange.getStart());
         boolean last = Bytes.startsWith(rowKey, rowRange.getLast());
         long baseTs = RowKey.baseTsFromRowKey(rowKey);
@@ -66,10 +68,11 @@ public class HBaseDataProvider implements TsdbDataProvider {
             if (last && offset > rowRange.getLastOffset()) {
                 continue;
             }
-            DataPoint dataPoint = new DataPoint(baseTs + offset,
-                    DataPoint.decodeValue(cells.get(key), key));
+            DataPoint dataPoint = new DataPoint(baseTs + offset, DataPoint.decodeValue(cells.get(key), key));
             dataPoints.add(dataPoint);
         }
+
+        return dataPoints;
     }
 
     private ID[] getTagIDs(String[] tags) {
@@ -101,6 +104,7 @@ public class HBaseDataProvider implements TsdbDataProvider {
         ResultScanner scanner = dataTable.getScanner(scan);
         int count = 0;
         int falsePositives = 0;
+        int wtf = 0;
         // rows are in lexicographic order, which means there are already
         // ordered by time
         for (Result result : scanner) {
@@ -109,9 +113,12 @@ public class HBaseDataProvider implements TsdbDataProvider {
             if (tagFilter.filterRow(rowTags.asArray())) {
                 falsePositives++;
             } else {
-                pickDataPoints(metricData.getDataPoints(rowTags), rowRange,
+                ArrayList<DataPoint> dataPoints = pickDataPoints(rowRange,
                         rowKey.getKey(),
                         result.getFamilyMap(DATAPOINT_FAMILY.getBytes()));
+
+                if(dataPoints.size() > 0)
+                    metricData.getDataPoints(rowTags).addAll(dataPoints);
             }
             count++;
         }
