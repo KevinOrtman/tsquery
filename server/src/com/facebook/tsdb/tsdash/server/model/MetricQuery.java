@@ -51,13 +51,10 @@ public class MetricQuery {
         if (aggregator == null) {
             return toDissolve;
         }
-        // the host is dissolved by default
-        toDissolve.add("host");
         for (String userSpecified : dissolveTags) {
-            if (!userSpecified.equals("host")) {
-                toDissolve.add(userSpecified);
-            }
+            toDissolve.add(userSpecified);
         }
+
         return toDissolve;
     }
 

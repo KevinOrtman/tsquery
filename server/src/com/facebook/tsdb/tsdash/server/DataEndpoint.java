@@ -66,10 +66,8 @@ public class DataEndpoint extends TsdbServlet {
             Metric[] metrics = new Metric[metricQueries.length];
             for (int i = 0; i < metrics.length; i++) {
                 MetricQuery q = metricQueries[i];
-                metrics[i] = dataProvider.fetchMetric(q.name, tsFrom, tsTo,
-                        q.tags, q.orders);
-                metrics[i] = metrics[i].dissolveTags(q.getDissolveList(),
-                        q.aggregator);
+                metrics[i] = dataProvider.fetchMetric(q.name, tsFrom, tsTo, q.tags, q.orders);
+                metrics[i] = metrics[i].dissolveTags(q.getDissolveList(), q.aggregator);
                 if (q.rate) {
                     metrics[i].computeRate();
                 }
