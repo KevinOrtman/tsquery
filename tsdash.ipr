@@ -45,6 +45,22 @@
     <entry_points version="2.0" />
   </component>
   <component name="IdProvider" IDEtalkID="4487C357B44C93CF8F3E389A2ACF831E" />
+  <component name="InspectionProjectProfileManager">
+    <profiles>
+      <profile version="1.0" is_locked="false">
+        <option name="myName" value="Project Default" />
+        <option name="myLocal" value="false" />
+        <inspection_tool class="SpellCheckingInspection" enabled="false" level="TYPO" enabled_by_default="false">
+          <option name="processCode" value="true" />
+          <option name="processLiterals" value="true" />
+          <option name="processComments" value="true" />
+        </inspection_tool>
+      </profile>
+    </profiles>
+    <option name="PROJECT_PROFILE" />
+    <option name="USE_PROJECT_PROFILE" value="false" />
+    <version value="1.0" />
+  </component>
   <component name="Palette2">
     <group name="Swing">
       <item class="com.intellij.uiDesigner.HSpacer" tooltip-text="Horizontal Spacer" icon="/com/intellij/uiDesigner/icons/hspacer.png" removable="false" auto-create-binding="false" can-attach-label="false">
@@ -171,6 +187,9 @@
       <module fileurl="file://$PROJECT_DIR$/server/Server.iml" filepath="$PROJECT_DIR$/server/Server.iml" />
     </modules>
   </component>
+  <component name="ProjectResources">
+    <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
@@ -194,17 +213,6 @@
         <root url="jar://$PROJECT_DIR$/server/lib/slf4j-api-1.6.4.jar!/" />
         <root url="jar://$PROJECT_DIR$/server/lib/commons-lang-2.6.jar!/" />
         <root url="jar://$PROJECT_DIR$/server/lib/hbase-0.92.2.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-    </library>
-    <library name="lib1">
-      <CLASSES>
-        <root url="jar://$PROJECT_DIR$/ui/lib/gwt-user.jar!/" />
-        <root url="jar://$PROJECT_DIR$/ui/lib/gwt-dev.jar!/" />
-        <root url="jar://$PROJECT_DIR$/ui/lib/validation-api-1.0.0.GA.jar!/" />
-        <root url="jar://$PROJECT_DIR$/ui/lib/validation-api-1.0.0.GA-sources.jar!/" />
-        <root url="jar://$PROJECT_DIR$/ui/lib/gwt-visualization.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
