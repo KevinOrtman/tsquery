@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ceb9e9ce-99ac-43e6-9b8f-d743c75c7dcc" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/Server.iml" afterPath="$PROJECT_DIR$/server/Server.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/TsdbServlet.java" afterPath="$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/TsdbServlet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tsdash.ipr" afterPath="$PROJECT_DIR$/tsdash.ipr" />
+    <list default="true" id="ceb9e9ce-99ac-43e6-9b8f-d743c75c7dcc" name="Default" comment="Removing gnuplot logic">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/data/hbase/HBaseConnection.java" afterPath="$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/data/hbase/HBaseConnection.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tsdash.iws" afterPath="$PROJECT_DIR$/tsdash.iws" />
     </list>
     <ignored path="tsdash.iws" />
@@ -24,7 +22,7 @@
   </component>
   <component name="DebuggerManager">
     <line_breakpoints>
-      <breakpoint url="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/TsdbServlet.java" line="51" class="com.facebook.tsdb.tsdash.server.TsdbServlet" package="com.facebook.tsdb.tsdash.server">
+      <breakpoint url="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/data/hbase/HBaseConnection.java" line="57" class="com.facebook.tsdb.tsdash.server.data.hbase.HBaseConnection" package="com.facebook.tsdb.tsdash.server.data.hbase">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -37,7 +35,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/DataEndpoint.java" line="45" class="com.facebook.tsdb.tsdash.server.DataEndpoint" package="com.facebook.tsdb.tsdash.server">
+      <breakpoint url="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/TsdbServlet.java" line="49" class="com.facebook.tsdb.tsdash.server.TsdbServlet" package="com.facebook.tsdb.tsdash.server">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -91,10 +89,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="TsdbServlet.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="TsdbServlet.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/TsdbServlet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="50" column="64" selection-start="1764" selection-end="1764" vertical-scroll-proportion="0.5017361">
+            <state line="49" column="0" selection-start="1703" selection-end="1703" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -103,7 +101,47 @@
       <file leaf-file-name="DataEndpoint.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/DataEndpoint.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="0" selection-start="1620" selection-end="1620" vertical-scroll-proportion="0.0">
+            <state line="64" column="0" selection-start="2559" selection-end="2559" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="e#0#4105#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#1349#1379#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TsdbDataProviderFactory.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/data/TsdbDataProviderFactory.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="28" column="0" selection-start="994" selection-end="994" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="HBaseDataProvider.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/data/hbase/HBaseDataProvider.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="51" column="0" selection-start="1899" selection-end="1899" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="HBaseConnection.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/data/hbase/HBaseConnection.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="57" column="0" selection-start="2434" selection-end="2434" vertical-scroll-proportion="0.6666667">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="HTable.class" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://$PROJECT_DIR$/server/lib/hbase-0.92.2.jar!/org/apache/hadoop/hbase/client/HTable.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="37" column="11" selection-start="1404" selection-end="1404" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -125,6 +163,7 @@
         <option value="$PROJECT_DIR$/conf/tsdash.properties" />
         <option value="$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/PlotEndpoint.java" />
         <option value="$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/TsdbServlet.java" />
+        <option value="$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/data/hbase/HBaseConnection.java" />
       </list>
     </option>
   </component>
@@ -182,6 +221,16 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope">
+        <subPane subId="Project Files">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -200,46 +249,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tsdash" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="server" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="server" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tsdash" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="server" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="server" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="data" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
       <pane id="PackagesPane">
@@ -248,16 +257,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="tsdash" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="Scope">
-        <subPane subId="Project Files">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -279,8 +278,8 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RunManager" selected="Tomcat Server.tsdash.war">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
@@ -303,6 +302,24 @@
       <method>
         <option name="AntTarget" enabled="false" />
         <option name="BuildArtifacts" enabled="false" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method>
+        <option name="AntTarget" enabled="false" />
+        <option name="BuildArtifacts" enabled="false" />
+        <option name="Make" enabled="true" />
         <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
@@ -332,24 +349,6 @@
       <envs />
       <properties />
       <listeners />
-      <method>
-        <option name="AntTarget" enabled="false" />
-        <option name="BuildArtifacts" enabled="false" />
-        <option name="Make" enabled="true" />
-        <option name="Maven.BeforeRunTask" enabled="false" />
-      </method>
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method>
         <option name="AntTarget" enabled="false" />
         <option name="BuildArtifacts" enabled="false" />
@@ -502,6 +501,11 @@
       <created>1353853857647</created>
       <updated>1353853857647</updated>
     </task>
+    <task id="LOCAL-00001" summary="Removing gnuplot logic">
+      <created>1354249267725</created>
+      <updated>1354249267725</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -525,16 +529,15 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-4" y="-4" width="1928" height="1044" extended-state="6" />
-    <editor active="true" />
+    <frame x="-4" y="-4" width="1928" height="1044" extended-state="7" />
+    <editor active="false" />
     <layout>
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32998884" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32998884" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24946581" sideWeight="0.6008919" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39910814" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24946581" sideWeight="0.7670011" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23299888" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32998884" sideWeight="0.50267094" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -545,10 +548,11 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1650641" sideWeight="0.67001116" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32998884" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1650641" sideWeight="0.7670011" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32998884" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32998884" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -591,7 +595,7 @@
     <option name="SHOW_VCS_ERROR_NOTIFICATIONS" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removing gnuplot logic" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -604,6 +608,7 @@
     <option name="UPDATE_GROUP_BY_CHANGELIST" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
+    <MESSAGE value="Removing gnuplot logic" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -622,31 +627,6 @@
     </buildFile>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/data/hbase/DataPointQualifier.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="32" selection-start="679" selection-end="679" vertical-scroll-proportion="0.088541664" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/data/hbase/HBaseConnection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="13" selection-start="893" selection-end="893" vertical-scroll-proportion="0.14756945" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/data/hbase/HBaseDataProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="48" selection-start="1316" selection-end="1316" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/data/TsdbDataProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="18" selection-start="1300" selection-end="1300" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/data/hbase/IDMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="13" selection-start="788" selection-end="788" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/data/hbase/IDMapSyncLoader.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="33" column="13" selection-start="1113" selection-end="1113" vertical-scroll-proportion="0.0" />
@@ -692,16 +672,45 @@
         <state line="33" column="28" selection-start="1048" selection-end="1048" vertical-scroll-proportion="0.35416666" />
       </provider>
     </entry>
+    <entry file="jar://$PROJECT_DIR$/server/lib/hbase-0.92.2.jar!/org/apache/hadoop/hbase/ipc/HBaseRPC.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="74" column="0" selection-start="5479" selection-end="5479" vertical-scroll-proportion="0.8382353" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/data/hbase/HBaseDataProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="51" column="0" selection-start="1899" selection-end="1899" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/server/lib/hbase-0.92.2.jar!/org/apache/hadoop/hbase/client/HTable.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="11" selection-start="1404" selection-end="1404" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/DataEndpoint.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="0" selection-start="1620" selection-end="1620" vertical-scroll-proportion="0.0">
+        <state line="64" column="0" selection-start="2559" selection-end="2559" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/data/TsdbDataProviderFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="0" selection-start="994" selection-end="994" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/TsdbServlet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="50" column="64" selection-start="1764" selection-end="1764" vertical-scroll-proportion="0.5017361">
+        <state line="49" column="0" selection-start="1703" selection-end="1703" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/src/com/facebook/tsdb/tsdash/server/data/hbase/HBaseConnection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="57" column="0" selection-start="2434" selection-end="2434" vertical-scroll-proportion="0.6666667">
           <folding />
         </state>
       </provider>
