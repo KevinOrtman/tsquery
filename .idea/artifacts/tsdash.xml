@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="tsdash">
+    <output-path>$PROJECT_DIR$/</output-path>
+    <root id="archive" name="tsdash.war" />
+  </artifact>
+</component>

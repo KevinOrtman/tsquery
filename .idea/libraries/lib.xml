@@ -1,0 +1,21 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/server/lib/zookeeper-3.4.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/server/lib/commons-logging-1.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/server/lib/jcl-over-slf4j-1.6.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/server/lib/json_simple-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/server/lib/log4j-1.2.16.jar!/" />
+      <root url="jar://$PROJECT_DIR$/server/lib/servlet-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/server/lib/log4j-over-slf4j-1.6.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/server/lib/guava-r09.jar!/" />
+      <root url="jar://$PROJECT_DIR$/server/lib/hadoop-core-1.0.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/server/lib/commons-configuration-1.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/server/lib/slf4j-api-1.6.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/server/lib/commons-lang-2.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/server/lib/hbase-0.92.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,6 +1,6 @@
 *~
 *.war
 out/**/*
-.idea/**/*
-.idea
 out
+.idea/workspace.xml
+.idea/tasks.xml
