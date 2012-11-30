@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<project name="OpenTSDB - tsdash" basedir="." default="war">
+<project name="OpenTSDB - tsquery" basedir="." default="war">
   <description>
-	Global build file for tsdash
+	Global build file for tsquery
   </description>
 
   <property name="server" location="server" />
-  <property name="ui" location="ui" />
   <property name="conf" location="conf" />
 
   <target name="server">
@@ -22,18 +21,11 @@
 	</chmod>
   </target>
 
-  <target name="ui">
-	<echo>Building the UI...</echo>
-	<ant target="build" dir="${ui}" />
-  </target>
-
-  <target name="war" depends="server,ui">
+  <target name="war" depends="server">
 	<echo>Packing the .war file</echo>
 	<war destfile="tsdash.war" webxml="${conf}/web.xml">
 	  <lib dir="${server}/lib" />
 	  <lib file="${server}/build/tsdash-server.jar" />
-	  <fileset dir="${ui}/war" excludes="WEB-INF/">
-	  </fileset>
 	</war>
   </target>
 
