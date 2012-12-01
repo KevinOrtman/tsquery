@@ -40,7 +40,7 @@ public class DataEndpoint extends TsdbServlet {
     @SuppressWarnings("unchecked")
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        response.setContentType("text/plain");
+        response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         try {
             long ts = System.currentTimeMillis();
@@ -49,6 +49,7 @@ public class DataEndpoint extends TsdbServlet {
             if (jsonParams == null) {
                 throw new Exception("Parameters not specified");
             }
+
             JSONObject jsonParamsObj = (JSONObject) JSONValue.parse(jsonParams);
             long tsFrom = (Long) jsonParamsObj.get("tsFrom");
             long tsTo = (Long) jsonParamsObj.get("tsTo");
@@ -81,8 +82,19 @@ public class DataEndpoint extends TsdbServlet {
             responseObj.put("metrics", encodedMetrics);
             responseObj.put("loadtime", loadTime);
             DataTable dataTable = new DataTable(metrics);
-            responseObj.put("datatable", dataTable.toJSONObject());
-            out.println(responseObj.toJSONString());
+            responseObj.put("series", dataTable.toJSONObject());
+
+            // jsonp support
+            String jsonCallback = request.getParameter("jsoncallback");
+            if((jsonCallback != null) && (!jsonCallback.isEmpty())) {
+                out.print(jsonCallback + "('");
+                out.print(responseObj.toJSONString());
+                out.println("');");
+            }
+            else {
+                out.println(responseObj.toJSONString());
+            }
+
             long encodingTime = System.currentTimeMillis() - ts - loadTime;
             logger.info("[Data] time frame: " + (tsTo - tsFrom) + "s, "
                     + "load time: " + loadTime + "ms, " + "encoding time: "

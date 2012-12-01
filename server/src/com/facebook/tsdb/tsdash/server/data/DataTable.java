@@ -106,10 +106,32 @@ public class DataTable {
     }
 
     @SuppressWarnings("unchecked")
-    public JSONObject toJSONObject() {
-        JSONObject result = new JSONObject();
-        result.put("cols", generateColumns());
-        result.put("rows", generateRows());
-        return result;
+    public JSONArray toJSONObject() {
+        JSONArray seriesArray = new JSONArray();
+
+        for (Metric metric : metrics) {
+            for (TagsArray t : metric.timeSeries.keySet()) {
+                JSONObject series = new JSONObject();
+                series.put("name", renderLineTitle(metric, t));
+                series.put("data", generateTimeSeriesData(metric, t));
+                seriesArray.add(series);
+            }
+        }
+
+        return seriesArray;
+    }
+
+    public JSONArray generateTimeSeriesData(Metric metric, TagsArray timeSeriesKey)
+    {
+        JSONArray arrary = new JSONArray();
+
+        for(DataPoint point : metric.timeSeries.get(timeSeriesKey))
+        {
+            JSONArray values = new JSONArray();
+            values.add(point.ts);
+            values.add(point.value);
+            arrary.add(values);
+        }
+        return arrary;
     }
 }
