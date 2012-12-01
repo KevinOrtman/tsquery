@@ -301,7 +301,7 @@ public class Metric {
      * The resulted metric will not be able to accept filters on this tag
      * anymore.
      *
-     * @param tagName
+     * @param tagsName
      * @param aggregatorName
      *            'sum', 'max', 'min' or 'avg'
      * @return a new Metric object that contains the aggregated rows
@@ -418,8 +418,14 @@ public class Metric {
         topObj.put("name", name);
         HashMap<String, HashSet<String>> tagsSet = getTagsSet();
         topObj.put("tags", encodeTagsSet(tagsSet));
-        topObj.put("commontags",
-                encodeCommonTags(getCommonTags(tagsSet.keySet())));
+        topObj.put("commontags", encodeCommonTags(getCommonTags(tagsSet.keySet())));
+
+        int rows = 0;
+        for (ArrayList<DataPoint> arrayList : timeSeries.values()) {
+            rows += arrayList.size();
+        }
+
+        topObj.put("rows", rows);
         return topObj;
     }
 
