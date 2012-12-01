@@ -301,14 +301,16 @@ public class Metric {
      * The resulted metric will not be able to accept filters on this tag
      * anymore.
      *
+     *
      * @param tagsName
      * @param aggregatorName
      *            'sum', 'max', 'min' or 'avg'
+     * @param downsample downsample rate (in seconds)
      * @return a new Metric object that contains the aggregated rows
      * @throws IDNotFoundException
      * @throws IOException
      */
-    public Metric dissolveTags(ArrayList<String> tagsName, String aggregatorName)
+    public Metric dissolveTags(ArrayList<String> tagsName, String aggregatorName, int downsample)
             throws IOException, IDNotFoundException {
 
         if (tagsName.size() == 0) {

@@ -27,6 +27,7 @@ public class MetricQuery {
     public HashMap<String, String> tags = null;
     public String[] orders;
     public String aggregator = null;
+    public int downsample = 0;
     public String[] dissolveTags;
     public boolean rate = false;
 
@@ -65,10 +66,11 @@ public class MetricQuery {
             newQuery.rate = (Boolean) src.get("rate");
         }
         newQuery.tags = decodeTags((JSONObject) src.get("tags"));
-        newQuery.aggregator = (String) src.get("aggregator");
+        newQuery.aggregator = ((String) src.get("aggregator")).toLowerCase();
+        newQuery.downsample = tryParse(src.get("downsample"), 0);
         newQuery.orders = decodeArray((JSONArray) src.get("orders"));
-        newQuery.dissolveTags =
-            decodeArray((JSONArray) src.get("dissolveTags"));
+        newQuery.dissolveTags = decodeArray((JSONArray) src.get("dissolveTags"));
+
         return newQuery;
     }
 
@@ -78,9 +80,20 @@ public class MetricQuery {
         ret += "tags: " + tags + '\n';
         ret += "orders: " + orders + '\n';
         ret += "aggregator: " + aggregator + '\n';
+        ret += "downsample: " + downsample + '\n';
         ret += "dissolve: " + dissolveTags + '\n';
         ret += "rate: " + rate + '\n';
         ret += '\n';
         return ret;
+    }
+
+    private static int tryParse(Object value, int def) {
+        int v = def;
+        try {
+            v = Integer.parseInt((String)value);
+        }
+        catch (Exception e) {
+        }
+        return v;
     }
 }
