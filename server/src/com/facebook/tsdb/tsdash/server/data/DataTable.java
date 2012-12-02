@@ -33,79 +33,6 @@ public class DataTable {
     }
 
     @SuppressWarnings("unchecked")
-    private JSONObject newColumn(String label, String type) {
-        JSONObject col = new JSONObject();
-        col.put("label", label);
-        col.put("type", type);
-        return col;
-    }
-
-    private String renderLineTitle(Metric metric, TagsArray tags) {
-        String suffix = metric.isRate() ? " /s" : "";
-        return metric.getName() + ": " + tags.getTitle() + suffix;
-    }
-
-    @SuppressWarnings("unchecked")
-    private JSONArray generateColumns() {
-        JSONArray cols = new JSONArray();
-        cols.add(newColumn("Date", "datetime"));
-        for (Metric metric : metrics) {
-            for (TagsArray timeSeries : metric.timeSeries.keySet()) {
-                cols.add(newColumn(renderLineTitle(metric, timeSeries),
-                        "number"));
-            }
-        }
-        return cols;
-    }
-
-    @SuppressWarnings("unchecked")
-    private JSONObject newDataCell(double value) {
-        JSONObject cell = new JSONObject();
-        cell.put("v", value);
-        return cell;
-    }
-
-    @SuppressWarnings("unchecked")
-    private JSONObject newTsCell(long ts) {
-        JSONObject cell = new JSONObject();
-        cell.put("v", ts * 1000);
-        return cell;
-    }
-
-    @SuppressWarnings("unchecked")
-    private JSONArray generateRows() {
-        // figure out the entire time series
-        ArrayList<Long> timeSeries = new ArrayList<Long>();
-        for (Metric metric : metrics) {
-            for (TagsArray t : metric.timeSeries.keySet()) {
-                timeSeries = TimeSeries.merge(timeSeries,
-                        metric.timeSeries.get(t));
-            }
-        }
-        JSONObject nullCell = new JSONObject();
-        JSONArray rows = new JSONArray();
-        for (long ts : timeSeries) {
-            JSONObject row = new JSONObject();
-            JSONArray cells = new JSONArray();
-            cells.add(newTsCell(ts));
-            for (Metric metric : metrics) {
-                for (TagsArray t : metric.timeSeries.keySet()) {
-                    ArrayList<DataPoint> points = metric.timeSeries.get(t);
-                    if (points.size() > 0 && points.get(0).ts == ts) {
-                        cells.add(newDataCell(points.get(0).value));
-                        points.remove(0);
-                    } else {
-                        cells.add(nullCell);
-                    }
-                }
-            }
-            row.put("c", cells);
-            rows.add(row);
-        }
-        return rows;
-    }
-
-    @SuppressWarnings("unchecked")
     public JSONArray toJSONObject() {
         JSONArray seriesArray = new JSONArray();
 
@@ -121,6 +48,11 @@ public class DataTable {
         return seriesArray;
     }
 
+    private String renderLineTitle(Metric metric, TagsArray tags) {
+        String suffix = metric.isRate() ? " /s" : "";
+        return metric.getName() + ": " + tags.getTitle() + suffix;
+    }
+
     public JSONArray generateTimeSeriesData(Metric metric, TagsArray timeSeriesKey)
     {
         JSONArray arrary = new JSONArray();
@@ -128,7 +60,7 @@ public class DataTable {
         for(DataPoint point : metric.timeSeries.get(timeSeriesKey))
         {
             JSONArray values = new JSONArray();
-            values.add(point.ts);
+            values.add(point.ts * 1000);
             values.add(point.value);
             arrary.add(values);
         }
