@@ -84,16 +84,7 @@ public class DataEndpoint extends TsdbServlet {
             DataTable dataTable = new DataTable(metrics);
             responseObj.put("series", dataTable.toJSONObject());
 
-            // jsonp support
-            String jsonCallback = request.getParameter("jsoncallback");
-            if((jsonCallback != null) && (!jsonCallback.isEmpty())) {
-                out.print(jsonCallback + "('");
-                out.print(responseObj.toJSONString());
-                out.println("');");
-            }
-            else {
-                out.println(responseObj.toJSONString());
-            }
+            doSendResponse(request, out, responseObj.toJSONString());
 
             long encodingTime = System.currentTimeMillis() - ts - loadTime;
             logger.info("[Data] time frame: " + (tsTo - tsFrom) + "s, "

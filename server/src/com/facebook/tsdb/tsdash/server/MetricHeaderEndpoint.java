@@ -68,9 +68,10 @@ public class MetricHeaderEndpoint extends TsdbServlet {
                 throw new Exception("Missing parameter");
             }
             TsdbDataProvider dataProvider = TsdbDataProviderFactory.get();
-            Metric metric = dataProvider.fetchMetricHeader(metricName, tsFrom,
-                    tsTo, tags);
-            out.println(metric.toJSONString());
+            Metric metric = dataProvider.fetchMetricHeader(metricName, tsFrom, tsTo, tags);
+
+            doSendResponse(request, out, metric.toJSONString());
+
             long loadTime = System.currentTimeMillis() - ts;
             logger.info("[Header] time frame: " + (tsTo - tsFrom) + "s, "
                     + "metric: " + metricName + ", tags: " + tags + ", "

@@ -44,7 +44,9 @@ public class MetricsEndpoint extends TsdbServlet {
             for (String metric : metrics) {
                 encoded.add(metric);
             }
-            out.println(encoded.toJSONString());
+
+            doSendResponse(request, out, encoded.toJSONString());
+
         } catch (Exception e) {
             out.println(getErrorResponse(e));
         }

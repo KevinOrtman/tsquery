@@ -78,4 +78,18 @@ public class TsdbServlet extends HttpServlet {
             throws IOException, ServletException {
         response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
+
+    protected void doSendResponse(HttpServletRequest request, PrintWriter out, String jsonString) {
+        // jsonp support
+        String jsonCallback = request.getParameter("jsoncallback");
+        if((jsonCallback != null) && (!jsonCallback.isEmpty())) {
+            out.print(jsonCallback + "('");
+            out.println(jsonString);
+            out.println("');");
+        }
+        else {
+            out.println(jsonString);
+        }
+    }
+
 }
