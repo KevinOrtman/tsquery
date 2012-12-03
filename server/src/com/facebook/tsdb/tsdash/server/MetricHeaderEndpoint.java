@@ -50,6 +50,9 @@ public class MetricHeaderEndpoint extends TsdbServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
+
+        response.setContentType("application/json");
+
         PrintWriter out = response.getWriter();
         try {
             // decode parameters

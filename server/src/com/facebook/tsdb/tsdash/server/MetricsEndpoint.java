@@ -35,6 +35,9 @@ public class MetricsEndpoint extends TsdbServlet {
     @SuppressWarnings("unchecked")
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
+
+        response.setContentType("application/json");
+
         PrintWriter out = response.getWriter();
         try {
             TsdbDataProvider dataProvider = TsdbDataProviderFactory.get();

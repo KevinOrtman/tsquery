@@ -40,7 +40,9 @@ public class DataEndpoint extends TsdbServlet {
     @SuppressWarnings("unchecked")
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
+
         response.setContentType("application/json");
+
         PrintWriter out = response.getWriter();
         try {
             long ts = System.currentTimeMillis();
