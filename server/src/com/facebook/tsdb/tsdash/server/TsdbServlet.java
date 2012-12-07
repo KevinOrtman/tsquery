@@ -15,47 +15,63 @@
  */
 package com.facebook.tsdb.tsdash.server;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Properties;
+import com.facebook.tsdb.tsdash.server.data.hbase.HBaseConnection;
+import net.opentsdb.core.TSDB;
+import org.apache.hadoop.hbase.ipc.HBaseClient;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.json.simple.JSONObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-import org.json.simple.JSONObject;
-
-import com.facebook.tsdb.tsdash.server.data.hbase.HBaseConnection;
+import java.io.*;
+import java.util.Properties;
 
 public class TsdbServlet extends HttpServlet {
 
     protected static Logger logger = Logger.getLogger("com.facebook.tsdb.services");
 
     private static final long serialVersionUID = 1L;
+    private static final String TSDB_TABLE = "tsdb";
+    private static final String TSDB_UID_TABLE = "tsdb-uid";
+    private static final short FLUSH_INTERVAL = 1000;
+
     public static final String PROPERTIES_FILE = "/etc/tsdash/tsdash.properties";
     public static final String LOG4J_PROPERTIES_FILE = "/etc/tsdash/log4j.properties";
 
-    private String hostname = null;
+    protected static TSDB _tsdb;
 
     private static void loadConfiguration() {
         Properties tsdbConf = new Properties();
+        org.hbase.async.HBaseClient client = null;
+
         try {
             PropertyConfigurator.configure(LOG4J_PROPERTIES_FILE);
             tsdbConf.load(new FileInputStream(PROPERTIES_FILE));
             HBaseConnection.configure(tsdbConf);
+
+            String quorum = tsdbConf.getProperty("hbase.zookeeper.quorum","localhost");
+
+            client = new org.hbase.async.HBaseClient(quorum);
+
+            client.ensureTableExists(TSDB_TABLE).joinUninterruptibly();
+            client.ensureTableExists(TSDB_UID_TABLE).joinUninterruptibly();
+
+            client.setFlushInterval(FLUSH_INTERVAL);
+            _tsdb = new TSDB(client, TSDB_TABLE, TSDB_UID_TABLE);
         } catch (FileNotFoundException e) {
             System.err.println("Cannot find "  + PROPERTIES_FILE);
         } catch (IOException e) {
             System.err.println("Cannot find "  + PROPERTIES_FILE);
+        } catch (Throwable e) {
+            try {
+                if(client != null)
+                    client.shutdown().joinUninterruptibly();
+            } catch (Exception e2) {
+                logger.error("Failed to shutdown HBase client", e2);
+            }
         }
     }
 

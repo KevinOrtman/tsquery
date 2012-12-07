@@ -15,22 +15,25 @@
  */
 package com.facebook.tsdb.tsdash.server;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-
 import com.facebook.tsdb.tsdash.server.data.DataTable;
 import com.facebook.tsdb.tsdash.server.data.TsdbDataProvider;
 import com.facebook.tsdb.tsdash.server.data.TsdbDataProviderFactory;
 import com.facebook.tsdb.tsdash.server.model.Metric;
 import com.facebook.tsdb.tsdash.server.model.MetricQuery;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
+import net.opentsdb.tsd.TsdApi;
+import net.opentsdb.core.Query;
+import net.opentsdb.core.Aggregators;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.TimeZone;
 
 public class DataEndpoint extends TsdbServlet {
 
@@ -43,6 +46,7 @@ public class DataEndpoint extends TsdbServlet {
 
         response.setContentType("application/json");
 
+        TsdApi api = new TsdApi();
         PrintWriter out = response.getWriter();
         try {
             long ts = System.currentTimeMillis();
@@ -65,19 +69,17 @@ public class DataEndpoint extends TsdbServlet {
                         .fromJSONObject((JSONObject) metricsArray.get(i));
             }
 
-            TsdbDataProvider dataProvider = TsdbDataProviderFactory.get();
-            Metric[] metrics = new Metric[metricQueries.length];
-            for (int i = 0; i < metrics.length; i++) {
-                MetricQuery q = metricQueries[i];
-                metrics[i] = dataProvider.fetchMetric(q.name, tsFrom, tsTo, q.tags, q.orders);
-                metrics[i] = metrics[i].dissolveTags(q.getDissolveList(), q.aggregator, q.downsample);
-                if (q.rate) {
-                    metrics[i].computeRate();
-                }
-            }
+            Query[] queries = new Query[1];
+            queries[0] = _tsdb.newQuery();
+            queries[0].setTimeSeries(metricQueries[0].name, metricQueries[0].tags, net.opentsdb.core.Aggregators.SUM, metricQueries[0].rate);
+
+            net.opentsdb.graph.Plot plot = api.Query(_tsdb, tsFrom, tsTo, queries, TimeZone.getDefault(), false);
+
             long loadTime = System.currentTimeMillis() - ts;
             JSONObject responseObj = new JSONObject();
             JSONArray encodedMetrics = new JSONArray();
+
+            /*
             for (Metric metric : metrics) {
                 encodedMetrics.add(metric.toJSONObject());
             }
@@ -85,6 +87,7 @@ public class DataEndpoint extends TsdbServlet {
             responseObj.put("loadtime", loadTime);
             DataTable dataTable = new DataTable(metrics);
             responseObj.put("series", dataTable.toJSONObject());
+              */
 
             doSendResponse(request, out, responseObj.toJSONString());
 
