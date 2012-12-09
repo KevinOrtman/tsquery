@@ -20,6 +20,8 @@
       <root url="jar://$PROJECT_DIR$/server/lib/netty-3.5.9.Final.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/server/lib/tsdb_src.zip!/tsdb_src/src" />
+    </SOURCES>
   </library>
 </component>

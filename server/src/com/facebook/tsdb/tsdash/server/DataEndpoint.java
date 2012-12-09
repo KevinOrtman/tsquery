@@ -20,6 +20,8 @@ import com.facebook.tsdb.tsdash.server.data.TsdbDataProvider;
 import com.facebook.tsdb.tsdash.server.data.TsdbDataProviderFactory;
 import com.facebook.tsdb.tsdash.server.model.Metric;
 import com.facebook.tsdb.tsdash.server.model.MetricQuery;
+import net.opentsdb.core.DataPoint;
+import net.opentsdb.core.DataPoints;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -77,8 +79,7 @@ public class DataEndpoint extends TsdbServlet {
 
             long loadTime = System.currentTimeMillis() - ts;
             JSONObject responseObj = new JSONObject();
-            JSONArray encodedMetrics = new JSONArray();
-
+            responseObj.put("data", test(plot));
             /*
             for (Metric metric : metrics) {
                 encodedMetrics.add(metric.toJSONObject());
@@ -99,6 +100,30 @@ public class DataEndpoint extends TsdbServlet {
             out.println(getErrorResponse(e));
         }
         out.close();
+    }
+
+    public JSONArray test(net.opentsdb.graph.Plot plot) {
+        int npoints = 0;
+        JSONArray arrary = new JSONArray();
+
+        for (DataPoints dataPoints : plot.getDataPoints()) {
+            for (DataPoint point : dataPoints) {
+                JSONArray values = new JSONArray();
+                values.add(point.timestamp() * 1000);
+                if (point.isInteger()) {
+                    values.add(point.longValue());
+                } else {
+                    final double value = point.doubleValue();
+                    if (value != value || Double.isInfinite(value)) {
+                        throw new IllegalStateException("invalid datapoint found");
+                    }
+                    values.add(value);
+                }
+                arrary.add(values);
+            }
+
+        }
+        return arrary;
     }
 
 }
