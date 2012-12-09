@@ -34,9 +34,8 @@ public class ID implements Comparable<ID> {
 
     @Override
     public int compareTo(ID other) {
-        int ret = UnsignedBytes.lexicographicalComparator().compare(id,
+        return UnsignedBytes.lexicographicalComparator().compare(id,
                 other.id);
-        return ret;
     }
 
     public boolean isNull() {

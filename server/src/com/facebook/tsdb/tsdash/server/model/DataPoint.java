@@ -15,10 +15,8 @@
  */
 package com.facebook.tsdb.tsdash.server.model;
 
-import org.apache.hadoop.hbase.util.Bytes;
-import org.json.simple.JSONArray;
-
 import com.facebook.tsdb.tsdash.server.data.hbase.DataPointQualifier;
+import org.apache.hadoop.hbase.util.Bytes;
 
 public class DataPoint implements Comparable<DataPoint> {
 
@@ -28,10 +26,6 @@ public class DataPoint implements Comparable<DataPoint> {
     public DataPoint(long ts, double value) {
         this.ts = ts;
         this.value = value;
-    }
-
-    public int intValue() {
-        return (int) value;
     }
 
     @Override
@@ -56,11 +50,4 @@ public class DataPoint implements Comparable<DataPoint> {
         return (int) (ts - other.ts);
     }
 
-    @SuppressWarnings("unchecked")
-    public JSONArray toJSONObject() {
-        JSONArray obj = new JSONArray();
-        obj.add(ts);
-        obj.add(value);
-        return obj;
-    }
 }

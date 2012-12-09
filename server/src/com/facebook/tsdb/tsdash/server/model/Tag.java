@@ -15,11 +15,9 @@
  */
 package com.facebook.tsdb.tsdash.server.model;
 
-import java.io.IOException;
-import java.util.Comparator;
-
 import com.facebook.tsdb.tsdash.server.data.hbase.IDMap;
-import com.facebook.tsdb.tsdash.server.data.hbase.IDNotFoundException;
+
+import java.util.Comparator;
 
 public class Tag {
 
@@ -83,7 +81,7 @@ public class Tag {
             }
             return 0;
         }
-    };
+    }
 
     private void loadStringFields(IDMap idMap) {
         try {
@@ -105,20 +103,6 @@ public class Tag {
         this.keyID = keyID;
         this.valueID = valueID;
         loadStringFields(idMap);
-    }
-
-    public Tag(String key, String value, IDMap idMap) throws IOException,
-            IDNotFoundException {
-        this.key = key;
-        this.value = value;
-        this.keyID = idMap.getTagID(key);
-        this.valueID = idMap.getTagValueID(value);
-    }
-
-    public Tag(String tagName, IDMap idMap) throws IOException,
-            IDNotFoundException {
-        this.key = tagName;
-        this.keyID = idMap.getTagID(tagName);
     }
 
     public static Comparator<TagsArray> arrayComparator() {

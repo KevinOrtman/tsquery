@@ -62,45 +62,6 @@ public class TagsArray {
         }
     }
 
-    public Tag disableTag(Tag tag) {
-        int i = binarySearch(tag);
-        if (i < 0) {
-            return null;
-        }
-        return disableTag(i);
-    }
-
-    private Tag disableTag(int i) {
-        Tag prev = tags[i];
-        tags[i] = new Tag(prev.keyID, ID.NULL_ID, idMap);
-        return prev;
-    }
-
-    /**
-     * disable the given tags from the current tags array, that MUST be sorted
-     * by tag key
-     *
-     * @param tags
-     *            array of tags sorted by key
-     */
-    public void disableTags(Tag[] tags) {
-        int i = 0;
-        int j = 0;
-        while (i < this.tags.length && j < tags.length) {
-            int cmp = Tag.keyComparator().compare(this.tags[i], tags[j]);
-            if (cmp < 0) {
-                i++;
-            } else if (cmp > 0) {
-                j++;
-            } else {
-                // there are equals
-                disableTag(i);
-                i++;
-                j++;
-            }
-        }
-    }
-
     public TagsArray copy() {
         Tag[] newTags = Arrays.copyOf(tags, tags.length);
         return new TagsArray(newTags, priTags, idMap);
@@ -122,20 +83,6 @@ public class TagsArray {
         return tags.length;
     }
 
-    public String getTitle() {
-        String title = "";
-        for (int i = 0; i < order.length; i++) {
-            Tag tag = tags[order[i]];
-            if (!tag.valueID.isNull()) {
-                if (!title.equals("")) {
-                    title += ", ";
-                }
-                title += tag.key + '=' + tag.value;
-            }
-        }
-        return title;
-    }
-
     @Override
     public String toString() {
         String ret = "Natural order: ";
@@ -143,8 +90,8 @@ public class TagsArray {
             ret += tag + " ";
         }
         ret += "\nUser given order:";
-        for (int i = 0; i < order.length; i++) {
-            ret += tags[order[i]] + " ";
+        for (int anOrder : order) {
+            ret += tags[anOrder] + " ";
         }
         return ret;
     }
