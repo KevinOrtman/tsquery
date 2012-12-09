@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import com.facebook.tsdb.tsdash.server.model.ID;
 import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableSet;
 
 public class IDMap {
 
@@ -42,7 +43,8 @@ public class IDMap {
 
     public String[] getMetrics() throws IOException {
         ImmutableBiMap<String, ID> metricsMap = syncMetricsLoader.get();
-        return metricsMap.keySet().toArray(new String[0]);
+        ImmutableSet<String> strings = metricsMap.keySet();
+        return strings.toArray(new String[strings.size()]);
     }
 
     public ID getMetricID(String metric) throws IOException,
@@ -55,22 +57,12 @@ public class IDMap {
         return metricID;
     }
 
-    public String getMetric(ID metricID) throws IOException,
-            IDNotFoundException {
-        ImmutableBiMap<String, ID> metricsMap = syncMetricsLoader.get();
-        String metric = getEqual(metricsMap, metricID);
-        if (metric == null) {
-            throw new IDNotFoundException("metric id '" + metricID
-                    + "' not found");
-        }
-        return metric;
-    }
-
     // tags
 
     public String[] getTags() throws IOException {
         ImmutableBiMap<String, ID> tagsMap = syncTagsLoader.get();
-        return tagsMap.keySet().toArray(new String[0]);
+        ImmutableSet<String> strings = tagsMap.keySet();
+        return strings.toArray(new String[strings.size()]);
     }
 
     public ID getTagID(String tag) throws IOException, IDNotFoundException {
@@ -95,7 +87,8 @@ public class IDMap {
 
     public String[] getTagValues() throws IOException {
         ImmutableBiMap<String, ID> tagValuesMap = syncTagValuesLoader.get();
-        return tagValuesMap.keySet().toArray(new String[0]);
+        ImmutableSet<String> strings = tagValuesMap.keySet();
+        return strings.toArray(new String[strings.size()]);
     }
 
     public ID getTagValueID(String tagValue) throws IOException,

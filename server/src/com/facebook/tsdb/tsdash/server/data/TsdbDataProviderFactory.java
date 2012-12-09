@@ -23,8 +23,7 @@ public class TsdbDataProviderFactory {
 
     public static TsdbDataProvider get() throws TsdbDataProviderException {
         try {
-            HBaseDataProvider hbase = new HBaseDataProvider();
-            return hbase;
+            return new HBaseDataProvider();
         } catch (IOException e) {
             e.printStackTrace();
             throw new TsdbDataProviderException("No data provider available");

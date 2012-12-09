@@ -66,7 +66,6 @@ public class IDMapSyncLoader {
                 mapBuilder.put(rowKey, new ID(value));
             }
         }
-        ImmutableBiMap<String, ID> map = mapBuilder.build();
-        return map;
+        return mapBuilder.build();
     }
 }

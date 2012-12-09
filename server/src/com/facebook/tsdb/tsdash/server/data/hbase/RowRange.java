@@ -93,8 +93,4 @@ public class RowRange {
         return res;
     }
 
-    public static int prefixBytes() {
-        return ID.BYTES + RowKey.PREFIX_TS_BYTES;
-    }
-
 }

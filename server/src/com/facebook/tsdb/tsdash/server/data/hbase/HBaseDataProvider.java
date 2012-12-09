@@ -38,7 +38,6 @@ public class HBaseDataProvider implements TsdbDataProvider {
             .getLogger("com.facebook.tsdb.services");
 
     public static final String ID_FAMILY = "id";
-    public static final String NAME_FAMILY = "name";
     public static final String DATAPOINT_FAMILY = "t";
 
     public static final String METRIC_QUALIFIER = "metrics";
@@ -85,14 +84,14 @@ public class HBaseDataProvider implements TsdbDataProvider {
                 e.printStackTrace();
             }
         }
-        return tagsIDs.toArray(new ID[0]);
+        return tagsIDs.toArray(new ID[tagsIDs.size()]);
     }
 
     @Override
     public Metric fetchMetric(String metric, long startTs, long toTs,
             Map<String, String> tags, String[] tagOrders) throws Exception {
         ID metricID = idMap.getMetricID(metric);
-        Metric metricData = new Metric(metricID.id, metric, idMap);
+        Metric metricData = new Metric(metricID.id, metric);
         RowRange rowRange = new RowRange(metricID.id, startTs, toTs);
         RowTagFilter tagFilter = new RowTagFilter(tags, idMap);
         ID[] tagsPrio = getTagIDs(tagOrders);
@@ -104,7 +103,6 @@ public class HBaseDataProvider implements TsdbDataProvider {
         ResultScanner scanner = dataTable.getScanner(scan);
         int count = 0;
         int falsePositives = 0;
-        int wtf = 0;
         // rows are in lexicographic order, which means there are already
         // ordered by time
         for (Result result : scanner) {
@@ -131,7 +129,7 @@ public class HBaseDataProvider implements TsdbDataProvider {
     public Metric fetchMetricHeader(String metric, long startTs, long toTs,
             Map<String, String> tags) throws Exception {
         ID metricID = idMap.getMetricID(metric);
-        Metric metricData = new Metric(metricID.id, metric, idMap);
+        Metric metricData = new Metric(metricID.id, metric);
         RowRange rowRange = new RowRange(metricID.id, startTs, toTs);
         RowTagFilter tagFilter = new RowTagFilter(tags, idMap);
 

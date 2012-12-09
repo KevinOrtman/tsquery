@@ -15,11 +15,11 @@
  */
 package com.facebook.tsdb.tsdash.server.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class MetricQuery {
 
@@ -64,7 +64,7 @@ public class MetricQuery {
     public String toString() {
         String ret = "Name: " + name + '\n';
         ret += "tags: " + tags + '\n';
-        ret += "orders: " + orders + '\n';
+        ret += "orders: " + Arrays.toString(orders) + '\n';
         ret += "aggregator: " + aggregator + '\n';
         ret += "downsample: " + downsample + '\n';
         ret += "rate: " + rate + '\n';

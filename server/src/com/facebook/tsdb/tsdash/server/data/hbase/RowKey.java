@@ -36,10 +36,6 @@ public class RowKey {
         this.idMap = idMap;
     }
 
-    public byte[] getID() {
-        return Arrays.copyOf(key, ID.BYTES);
-    }
-
     public byte[] getKey() {
         return key;
     }

@@ -74,7 +74,7 @@ public class DataEndpoint extends TsdbServlet {
 
             long loadTime = System.currentTimeMillis() - ts;
             JSONObject responseObj = new JSONObject();
-            responseObj.put("series", test(plot));
+            responseObj.put("series", PlotToJSONArray(plot));
             /*
             for (Metric metric : metrics) {
                 encodedMetrics.add(metric.toJSONObject());
@@ -97,7 +97,7 @@ public class DataEndpoint extends TsdbServlet {
         out.close();
     }
 
-    public JSONArray test(net.opentsdb.graph.Plot plot) {
+    public JSONArray PlotToJSONArray(net.opentsdb.graph.Plot plot) {
         JSONArray seriesArray = new JSONArray();
 
         for (DataPoints dataPoints : plot.getDataPoints()) {

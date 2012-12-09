@@ -17,6 +17,7 @@ package com.facebook.tsdb.tsdash.server;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collections;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -44,9 +45,7 @@ public class MetricsEndpoint extends TsdbServlet {
             String[] metrics = dataProvider.getMetrics();
             response.setContentType("text/plain");
             JSONArray encoded = new JSONArray();
-            for (String metric : metrics) {
-                encoded.add(metric);
-            }
+            Collections.addAll(encoded, metrics);
 
             doSendResponse(request, out, encoded.toJSONString());
 

@@ -36,10 +36,6 @@ public class RowTagFilter {
 
     private final Tag[] tags;
 
-    public RowTagFilter(Tag[] tags) {
-        this.tags = tags;
-    }
-
     public RowTagFilter(Map<String, String> tags, IDMap idMap) {
         ArrayList<Tag> tagsList = new ArrayList<Tag>();
         for (String tag : tags.keySet()) {
@@ -49,17 +45,16 @@ public class RowTagFilter {
                 tagsList.add(new Tag(tagID, tagValueID, idMap));
             } catch (Exception e) {
                 e.printStackTrace();
-                continue;
             }
         }
         Collections.sort(tagsList, Tag.keyComparator());
-        this.tags = tagsList.toArray(new Tag[0]);
+        this.tags = tagsList.toArray(new Tag[tagsList.size()]);
     }
 
     /**
      * decide if we filter the row or not
      *
-     * @param timeSeries
+     * @param rowTags
      * @return true if we have to filter it false if we can accept it
      */
     public boolean filterRow(Tag[] rowTags) {

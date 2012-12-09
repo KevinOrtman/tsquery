@@ -17,7 +17,6 @@ package com.facebook.tsdb.tsdash.server;
 
 import com.facebook.tsdb.tsdash.server.data.hbase.HBaseConnection;
 import net.opentsdb.core.TSDB;
-import org.apache.hadoop.hbase.ipc.HBaseClient;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.json.simple.JSONObject;
