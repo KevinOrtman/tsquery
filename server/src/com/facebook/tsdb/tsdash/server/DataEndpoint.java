@@ -16,6 +16,7 @@
 package com.facebook.tsdb.tsdash.server;
 
 import com.facebook.tsdb.tsdash.server.model.MetricQuery;
+import net.opentsdb.core.Aggregator;
 import net.opentsdb.core.DataPoint;
 import net.opentsdb.core.DataPoints;
 import net.opentsdb.core.Query;
@@ -29,12 +30,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
 public class DataEndpoint extends TsdbServlet {
 
     private static final long serialVersionUID = 1L;
+    private static final HashMap<String, Aggregator> _aggregators = new HashMap<String, Aggregator> (5);
+
+    static {
+        _aggregators.put("sum", net.opentsdb.core.Aggregators.SUM);
+        _aggregators.put("min", net.opentsdb.core.Aggregators.MIN);
+        _aggregators.put("max", net.opentsdb.core.Aggregators.MAX);
+        _aggregators.put("avg", net.opentsdb.core.Aggregators.AVG);
+        _aggregators.put("dev", net.opentsdb.core.Aggregators.DEV);
+    }
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -60,15 +72,15 @@ public class DataEndpoint extends TsdbServlet {
             if (metricsArray.size() == 0) {
                 throw new Exception("No metrics to fetch");
             }
-            MetricQuery[] metricQueries = new MetricQuery[metricsArray.size()];
+            Query[] queries = new Query[metricsArray.size()];
             for (int i = 0; i < metricsArray.size(); i++) {
-                metricQueries[i] = MetricQuery
-                        .fromJSONObject((JSONObject) metricsArray.get(i));
+                MetricQuery metricQuery = MetricQuery.fromJSONObject((JSONObject) metricsArray.get(i));
+
+                queries[i] = _tsdb.newQuery();
+                queries[i].setTimeSeries(metricQuery.name, metricQuery.tags,
+                        _aggregators.get(metricQuery.aggregator), metricQuery.rate);
             }
 
-            Query[] queries = new Query[1];
-            queries[0] = _tsdb.newQuery();
-            queries[0].setTimeSeries(metricQueries[0].name, metricQueries[0].tags, net.opentsdb.core.Aggregators.SUM, metricQueries[0].rate);
 
             net.opentsdb.graph.Plot plot = api.Query(_tsdb, tsFrom, tsTo, queries, TimeZone.getDefault(), false);
 
