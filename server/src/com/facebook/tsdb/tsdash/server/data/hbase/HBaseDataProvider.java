@@ -15,22 +15,20 @@
  */
 package com.facebook.tsdb.tsdash.server.data.hbase;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
-
-import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.ResultScanner;
-import org.apache.hadoop.hbase.client.Scan;
-import org.apache.hadoop.hbase.util.Bytes;
-import org.apache.log4j.Logger;
-
 import com.facebook.tsdb.tsdash.server.data.TsdbDataProvider;
 import com.facebook.tsdb.tsdash.server.model.DataPoint;
 import com.facebook.tsdb.tsdash.server.model.ID;
 import com.facebook.tsdb.tsdash.server.model.Metric;
 import com.facebook.tsdb.tsdash.server.model.TagsArray;
+import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class HBaseDataProvider implements TsdbDataProvider {
 
@@ -38,7 +36,6 @@ public class HBaseDataProvider implements TsdbDataProvider {
             .getLogger("com.facebook.tsdb.services");
 
     public static final String ID_FAMILY = "id";
-    public static final String DATAPOINT_FAMILY = "t";
 
     public static final String METRIC_QUALIFIER = "metrics";
     public static final String TAG_QUALIFIER = "tagk";
@@ -49,80 +46,6 @@ public class HBaseDataProvider implements TsdbDataProvider {
 
     public HBaseDataProvider() throws IOException {
         dataTable = HBaseConnection.getDataTableConn();
-    }
-
-    private ArrayList<DataPoint> pickDataPoints(RowRange rowRange, byte[] rowKey, Map<byte[], byte[]> cells) {
-
-        ArrayList<DataPoint> dataPoints = new ArrayList<DataPoint>();
-
-        boolean first = Bytes.startsWith(rowKey, rowRange.getStart());
-        boolean last = Bytes.startsWith(rowKey, rowRange.getLast());
-        long baseTs = RowKey.baseTsFromRowKey(rowKey);
-        // skipping the points outside our time range
-        for (byte[] key : cells.keySet()) {
-            long offset = DataPointQualifier.offsetFromQualifier(key);
-            if (first && offset < rowRange.getStartOffset()) {
-                continue;
-            }
-            if (last && offset > rowRange.getLastOffset()) {
-                continue;
-            }
-            DataPoint dataPoint = new DataPoint(baseTs + offset, DataPoint.decodeValue(cells.get(key), key));
-            dataPoints.add(dataPoint);
-        }
-
-        return dataPoints;
-    }
-
-    private ID[] getTagIDs(String[] tags) {
-        ArrayList<ID> tagsIDs = new ArrayList<ID>();
-        for (String tag : tags) {
-            try {
-                ID tagID = idMap.getTagID(tag);
-                tagsIDs.add(tagID);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return tagsIDs.toArray(new ID[tagsIDs.size()]);
-    }
-
-    @Override
-    public Metric fetchMetric(String metric, long startTs, long toTs,
-            Map<String, String> tags, String[] tagOrders) throws Exception {
-        ID metricID = idMap.getMetricID(metric);
-        Metric metricData = new Metric(metricID.id, metric);
-        RowRange rowRange = new RowRange(metricID.id, startTs, toTs);
-        RowTagFilter tagFilter = new RowTagFilter(tags, idMap);
-        ID[] tagsPrio = getTagIDs(tagOrders);
-
-        Scan scan = new Scan(rowRange.getStart(), rowRange.getStop());
-        if (tags.size() > 0) {
-            scan.setFilter(tagFilter.getRemoteFilter());
-        }
-        ResultScanner scanner = dataTable.getScanner(scan);
-        int count = 0;
-        int falsePositives = 0;
-        // rows are in lexicographic order, which means there are already
-        // ordered by time
-        for (Result result : scanner) {
-            RowKey rowKey = new RowKey(result.getRow(), idMap);
-            TagsArray rowTags = rowKey.getTags(tagsPrio);
-            if (tagFilter.filterRow(rowTags.asArray())) {
-                falsePositives++;
-            } else {
-                ArrayList<DataPoint> dataPoints = pickDataPoints(rowRange,
-                        rowKey.getKey(),
-                        result.getFamilyMap(DATAPOINT_FAMILY.getBytes()));
-
-                if(dataPoints.size() > 0)
-                    metricData.getDataPoints(rowTags).addAll(dataPoints);
-            }
-            count++;
-        }
-        logger.info(metric + ": " + count + " rows scanned, " + falsePositives
-                + " false positives found");
-        return metricData;
     }
 
     @Override
@@ -158,31 +81,6 @@ public class HBaseDataProvider implements TsdbDataProvider {
     @Override
     public String[] getMetrics() throws Exception {
         return idMap.getMetrics();
-    }
-
-    @Override
-    public String[] getTags(String metric) throws Exception {
-        return idMap.getTags();
-    }
-
-    @Override
-    public String[] getTagValues(String tag) throws Exception {
-        return idMap.getTagValues();
-    }
-
-    @Override
-    public byte[] getMetricID(String metric) throws Exception {
-        return idMap.getMetricID(metric).id;
-    }
-
-    @Override
-    public byte[] getTagID(String tag) throws Exception {
-        return idMap.getTagID(tag).id;
-    }
-
-    @Override
-    public byte[] getTagValueID(String tagValue) throws Exception {
-        return idMap.getTagValueID(tagValue).id;
     }
 
 }
