@@ -28,7 +28,6 @@ public class MetricQuery {
     public String[] orders;
     public String aggregator = null;
     public int downsample = 0;
-    public String[] dissolveTags;
     public boolean rate = false;
 
     public static HashMap<String, String> decodeTags(JSONObject tagsObj) {
@@ -47,18 +46,6 @@ public class MetricQuery {
         return array;
     }
 
-    public ArrayList<String> getDissolveList() {
-        ArrayList<String> toDissolve = new ArrayList<String>();
-        if (aggregator == null) {
-            return toDissolve;
-        }
-        for (String userSpecified : dissolveTags) {
-            toDissolve.add(userSpecified);
-        }
-
-        return toDissolve;
-    }
-
     public static MetricQuery fromJSONObject(JSONObject src) {
         MetricQuery newQuery = new MetricQuery();
         newQuery.name = (String) src.get("name");
@@ -69,7 +56,6 @@ public class MetricQuery {
         newQuery.aggregator = ((String) src.get("aggregator")).toLowerCase();
         newQuery.downsample = tryParse(src.get("downsample"), 0);
         newQuery.orders = decodeArray((JSONArray) src.get("orders"));
-        newQuery.dissolveTags = decodeArray((JSONArray) src.get("dissolveTags"));
 
         return newQuery;
     }
@@ -81,7 +67,6 @@ public class MetricQuery {
         ret += "orders: " + orders + '\n';
         ret += "aggregator: " + aggregator + '\n';
         ret += "downsample: " + downsample + '\n';
-        ret += "dissolve: " + dissolveTags + '\n';
         ret += "rate: " + rate + '\n';
         ret += '\n';
         return ret;

@@ -66,7 +66,6 @@ public class Metric {
     public TreeMap<TagsArray, ArrayList<DataPoint>> timeSeries =
         new TreeMap<TagsArray, ArrayList<DataPoint>>(
             Tag.arrayComparator());
-    private final HashSet<String> dissolvedTags = new HashSet<String>();
     private String aggregatorName = null;
     private boolean rate = false;
 
@@ -294,86 +293,6 @@ public class Metric {
             }
         }
         this.timeSeries = aligned;
-    }
-
-    /**
-     * create a new metric with rows aggregated after dissolving the given tags.
-     * The resulted metric will not be able to accept filters on this tag
-     * anymore.
-     *
-     *
-     * @param tagsName
-     * @param aggregatorName
-     *            'sum', 'max', 'min' or 'avg'
-     * @param downsample downsample rate (in seconds)
-     * @return a new Metric object that contains the aggregated rows
-     * @throws IDNotFoundException
-     * @throws IOException
-     */
-    public Metric dissolveTags(ArrayList<String> tagsName, String aggregatorName, int downsample)
-            throws IOException, IDNotFoundException {
-
-        if (tagsName.size() == 0) {
-            return this;
-        }
-
-        HashMap<String, HashSet<String>> tagsSet = getTagsSet();
-        for (String tagName : tagsName) {
-            if (!tagsSet.containsKey(tagName)) {
-                logger.error("Dissolve error: tag '" + tagName + "' is not part of the tag set");
-                return null;
-            }
-            // we can only dissolve once a given tag
-            if (dissolvedTags.contains(tagName)) {
-                logger.error("Metric already dissolved tag " + tagName);
-                return null;
-            }
-        }
-        // this aligns the time series in a perfect grid
-        // alignAllTimeSeries();
-
-        Metric newData = new Metric(id, name, idMap);
-
-        // TODO kevin
-        // gonna play with this logic to flip the disolve
-        // I want to return ONLY the "disolved" tag, will clean up
-        // later to make this clear from the API
-        Tag[] toDissolve = new Tag[tagsSet.size()  - tagsName.size()];
-        int counter=0;
-        for (String key : tagsSet.keySet()) {
-            if(!tagsName.contains(key)) {
-                toDissolve[counter++] = new Tag(key, idMap);
-                newData.dissolvedTags.add(key);
-            }
-        }
-
-        TreeMap<TagsArray, ArrayList<ArrayList<DataPoint>>> dissolved = new TreeMap<TagsArray, ArrayList<ArrayList<DataPoint>>>(Tag.arrayComparator());
-
-        // sort the tags we will dissolve for calling disableTags()
-        Arrays.sort(toDissolve, Tag.keyComparator());
-        for (TagsArray header : timeSeries.keySet()) {
-            TagsArray dissolvedRowTags = header.copy();
-            if (toDissolve.length == 1) {
-                dissolvedRowTags.disableTag(toDissolve[0]);
-            }
-            else {
-                dissolvedRowTags.disableTags(toDissolve);
-            }
-
-            if (!dissolved.containsKey(dissolvedRowTags)) {
-                dissolved.put(dissolvedRowTags, new ArrayList<ArrayList<DataPoint>>());
-            }
-
-            ArrayList<DataPoint> points = timeSeries.get(header);
-            dissolved.get(dissolvedRowTags).add(points);
-        }
-
-        Aggregator aggregator = getAggregator(aggregatorName);
-        newData.aggregatorName = aggregatorName;
-        for (TagsArray header : dissolved.keySet()) {
-            newData.timeSeries.put(header, TimeSeries.aggregate(dissolved.get(header), aggregator));
-        }
-        return newData;
     }
 
     /**
