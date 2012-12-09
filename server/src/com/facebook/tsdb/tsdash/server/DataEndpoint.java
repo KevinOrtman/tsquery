@@ -58,7 +58,8 @@ public class DataEndpoint extends TsdbServlet {
         TsdApi api = new TsdApi();
         PrintWriter out = response.getWriter();
         try {
-            long ts = System.currentTimeMillis();
+            JSONObject responseObj = new JSONObject();
+
             // decode parameters
             String jsonParams = request.getParameter("params");
             if (jsonParams == null) {
@@ -82,27 +83,16 @@ public class DataEndpoint extends TsdbServlet {
             }
 
 
+            long ts = System.currentTimeMillis();
             net.opentsdb.graph.Plot plot = api.Query(_tsdb, tsFrom, tsTo, queries, TimeZone.getDefault(), false);
+            responseObj.put("loadtime", System.currentTimeMillis() - ts);
 
-            long loadTime = System.currentTimeMillis() - ts;
-            JSONObject responseObj = new JSONObject();
+            ts = System.currentTimeMillis();
             responseObj.put("series", PlotToJSONArray(plot));
-            /*
-            for (Metric metric : metrics) {
-                encodedMetrics.add(metric.toJSONObject());
-            }
-            responseObj.put("metrics", encodedMetrics);
-            responseObj.put("loadtime", loadTime);
-            DataTable dataTable = new DataTable(metrics);
-            responseObj.put("series", dataTable.toJSONObject());
-              */
+            responseObj.put("serializationtime", System.currentTimeMillis() - ts);
 
             doSendResponse(request, out, responseObj.toJSONString());
 
-            long encodingTime = System.currentTimeMillis() - ts - loadTime;
-            logger.info("[Data] time frame: " + (tsTo - tsFrom) + "s, "
-                    + "load time: " + loadTime + "ms, " + "encoding time: "
-                    + encodingTime + "ms");
         } catch (Exception e) {
             out.println(getErrorResponse(e));
         }

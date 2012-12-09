@@ -10,14 +10,11 @@
   <target name="server">
 	<echo>Building the server component...</echo>
 	<ant target="dist" dir="${server}" />
-	<mkdir dir="/etc/tsdash"/>
-        <copy todir="/etc/tsdash">
+	<mkdir dir="./etc/tsdash"/>
+        <copy todir="./etc/tsdash">
             <fileset dir="${conf}">
             </fileset>
         </copy>
-        <chmod perm="g+r">
-	    <fileset dir="/etc/tsdash">
-	    </fileset>
 	</chmod>
   </target>
 
