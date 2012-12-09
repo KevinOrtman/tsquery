@@ -97,6 +97,7 @@ public class DataEndpoint extends TsdbServlet {
         out.close();
     }
 
+    @SuppressWarnings("unchecked")
     public JSONArray PlotToJSONArray(net.opentsdb.graph.Plot plot) {
         JSONArray seriesArray = new JSONArray();
 
