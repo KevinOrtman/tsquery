@@ -15,26 +15,21 @@
  */
 package com.facebook.tsdb.tsdash.server;
 
-import com.facebook.tsdb.tsdash.server.data.DataTable;
-import com.facebook.tsdb.tsdash.server.data.TsdbDataProvider;
-import com.facebook.tsdb.tsdash.server.data.TsdbDataProviderFactory;
-import com.facebook.tsdb.tsdash.server.model.Metric;
 import com.facebook.tsdb.tsdash.server.model.MetricQuery;
 import net.opentsdb.core.DataPoint;
 import net.opentsdb.core.DataPoints;
+import net.opentsdb.core.Query;
+import net.opentsdb.tsd.TsdApi;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-
-import net.opentsdb.tsd.TsdApi;
-import net.opentsdb.core.Query;
-import net.opentsdb.core.Aggregators;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class DataEndpoint extends TsdbServlet {
@@ -79,7 +74,7 @@ public class DataEndpoint extends TsdbServlet {
 
             long loadTime = System.currentTimeMillis() - ts;
             JSONObject responseObj = new JSONObject();
-            responseObj.put("data", test(plot));
+            responseObj.put("series", test(plot));
             /*
             for (Metric metric : metrics) {
                 encodedMetrics.add(metric.toJSONObject());
@@ -103,10 +98,18 @@ public class DataEndpoint extends TsdbServlet {
     }
 
     public JSONArray test(net.opentsdb.graph.Plot plot) {
-        int npoints = 0;
-        JSONArray arrary = new JSONArray();
+        JSONArray seriesArray = new JSONArray();
 
         for (DataPoints dataPoints : plot.getDataPoints()) {
+            JSONArray dataArray = new JSONArray();
+            StringBuilder nameBuilder = new StringBuilder();
+
+            Map<String,String> tags = dataPoints.getTags();
+            for (String s : tags.keySet()) {
+                nameBuilder.append(String.format("%s=%s, ", s, tags.get(s)) );
+            }
+            nameBuilder.setLength(nameBuilder.length() - 2);
+
             for (DataPoint point : dataPoints) {
                 JSONArray values = new JSONArray();
                 values.add(point.timestamp() * 1000);
@@ -119,11 +122,17 @@ public class DataEndpoint extends TsdbServlet {
                     }
                     values.add(value);
                 }
-                arrary.add(values);
+                dataArray.add(values);
             }
 
+            JSONObject series = new JSONObject();
+            series.put("name", nameBuilder.toString());
+            series.put("data", dataArray);
+
+            seriesArray.add(series);
         }
-        return arrary;
+
+        return seriesArray;
     }
 
 }
