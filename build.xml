@@ -15,7 +15,6 @@
             <fileset dir="${conf}">
             </fileset>
         </copy>
-	</chmod>
   </target>
 
   <target name="war" depends="server">
