@@ -99,7 +99,7 @@ public class TsdbServlet extends HttpServlet {
         String jsonCallback = request.getParameter("jsoncallback");
         if((jsonCallback != null) && (!jsonCallback.isEmpty())) {
             out.print(jsonCallback + "('");
-            out.println(jsonString);
+            out.print(jsonString);
             out.println("');");
         }
         else {
