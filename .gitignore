@@ -2,5 +2,6 @@
 *.war
 out/**/*
 out
+etc
 .idea/workspace.xml
 .idea/tasks.xml
