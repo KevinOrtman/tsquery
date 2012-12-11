@@ -23,14 +23,14 @@
   version="3.0"
   metadata-complete="true">
 
-  <display-name>TSDash</display-name>
+  <display-name>tsQuery</display-name>
   <description>
-     TSDash - UI for OpenTSDB
+     tsQuery - JSONP query interface for OpenTSDB
   </description>
 
   <servlet>
     <servlet-name>MetricsEndpoint</servlet-name>
-    <servlet-class>com.facebook.tsdb.tsdash.server.MetricsEndpoint</servlet-class>
+    <servlet-class>net.tsquery.MetricsEndpoint</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>MetricsEndpoint</servlet-name>
@@ -39,7 +39,7 @@
 
   <servlet>
     <servlet-name>MetricHeaderEndpoint</servlet-name>
-    <servlet-class>com.facebook.tsdb.tsdash.server.MetricHeaderEndpoint</servlet-class>
+    <servlet-class>net.tsquery.MetricHeaderEndpoint</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>MetricHeaderEndpoint</servlet-name>
@@ -48,7 +48,7 @@
 
   <servlet>
     <servlet-name>DataEndpoint</servlet-name>
-    <servlet-class>com.facebook.tsdb.tsdash.server.DataEndpoint</servlet-class>
+    <servlet-class>net.tsquery.DataEndpoint</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>DataEndpoint</servlet-name>
@@ -57,7 +57,7 @@
 
   <servlet>
     <servlet-name>PlotEndpoint</servlet-name>
-    <servlet-class>com.facebook.tsdb.tsdash.server.PlotEndpoint</servlet-class>
+    <servlet-class>net.tsquery.PlotEndpoint</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>PlotEndpoint</servlet-name>

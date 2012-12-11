@@ -1,6 +1,6 @@
-<project name="OpenTSDB - tsdash server" default="dist" basedir=".">
+<project name="OpenTSDB - tsquery" default="dist" basedir=".">
     <description>
-      Build file for tsdash-server
+      Build file for tsquery
     </description>
   <property name="src" location="src"/>
   <property name="build" location="build"/>
@@ -22,8 +22,8 @@
 
   <target name="dist" depends="compile"
         description="generate the distribution" >
-	<delete file="${build}/tsdash-server.jar" quiet="true" />
-    <jar jarfile="${build}/tsdash-server.jar" basedir="${build}"/>
+	<delete file="${build}/tsquery.jar" quiet="true" />
+    <jar jarfile="${build}/tsquery.jar" basedir="${build}"/>
   </target>
 
   <target name="clean" description="clean up" >

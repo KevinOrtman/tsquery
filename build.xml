@@ -10,8 +10,8 @@
   <target name="server">
 	<echo>Building the server component...</echo>
 	<ant target="dist" dir="${server}" />
-	<mkdir dir="./etc/tsdash"/>
-        <copy todir="./etc/tsdash">
+	<mkdir dir="./etc/tsquery"/>
+        <copy todir="./etc/tsquery">
             <fileset dir="${conf}">
             </fileset>
         </copy>
@@ -19,13 +19,13 @@
 
   <target name="war" depends="server">
 	<echo>Packing the .war file</echo>
-	<war destfile="tsdash.war" webxml="${conf}/web.xml">
+	<war destfile="tsquery.war" webxml="${conf}/web.xml">
 	  <lib dir="${server}/lib" />
-	  <lib file="${server}/build/tsdash-server.jar" />
+	  <lib file="${server}/build/tsquery-server.jar" />
 	</war>
   </target>
 
   <target name="clean" description="Removes the .war file">
-	<delete file="tsdash.war" failonerror="false" />
+	<delete file="tsquery.war" failonerror="false" />
   </target>
 </project>
