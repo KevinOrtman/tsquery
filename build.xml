@@ -21,7 +21,7 @@
 	<echo>Packing the .war file</echo>
 	<war destfile="tsquery.war" webxml="${server}/web/WEB-INF/web.xml">
 	  <lib dir="${server}/lib" />
-	  <lib file="${server}/build/tsquery-server.jar" />
+	  <lib file="${server}/build/tsquery.jar" />
 	</war>
   </target>
 
