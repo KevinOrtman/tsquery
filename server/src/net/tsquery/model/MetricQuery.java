@@ -53,7 +53,9 @@ public class MetricQuery {
             newQuery.rate = (Boolean) src.get("rate");
         }
         newQuery.tags = decodeTags((JSONObject) src.get("tags"));
-        newQuery.aggregator = ((String) src.get("aggregator")).toLowerCase();
+        newQuery.aggregator = "sum";
+        if(src.get("aggregator") != null)
+            newQuery.aggregator = ((String)src.get("aggregator")).toLowerCase();
         newQuery.downsample = tryParse(src.get("downsample"), 0);
         newQuery.orders = decodeArray((JSONArray) src.get("orders"));
 
