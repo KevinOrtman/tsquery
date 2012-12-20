@@ -21,7 +21,7 @@
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/server/lib/tsdb_src.zip!/tsdb_src/src" />
+      <root url="jar://$PROJECT_DIR$/server/tsdb_src.zip!/tsdb_src/src" />
     </SOURCES>
   </library>
 </component>
