@@ -1,9 +1,7 @@
-This is TSDash, a UI/Dashboard for OpenTSDB (http://opentsdb.net/). It is written in Java and it's built entirely using Open-Source software.
+This is tsQuery, a lightweight JSONP interface to query OpenTSDB data (http://opentsdb.net/). It was originally based on the server component of tsDash (https://github.com/facebook/tsdash) but is being re-written to call OpenTSDB logic directly.
 
 LICENSE
 -------
-
-Copyright 2011 Facebook, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may
 not use this file except in compliance with the License. You may obtain
@@ -17,36 +15,11 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations
 under the License.
 
-
-CONTENTS
---------
-
-server/	- contains the sources of the HTTP/JSON API needed by the UI
-ui/	- GWT UI
+Portions Copyright 2011 Facebook, Inc.
 
 BUILD
 =====
 
-To build each of the parts, run "ant" on "server" and "ui" directories. To build a deployable bundle run "ant war" from the root dir and this should build each component and create a .war file - tsdash.war - out of these, that can be deployed with any Servlet container (e.g. Apache Tomcat).
+To build a deployable bundle run "ant war" from the root dir and this should create a .war file - tsquery.war - that can be deployed with any Servlet container (e.g. Apache Tomcat).
 
-The two parts can also be imported in Eclipse (File > Import > Existing project into workspace) as separate projects. For the UI, Google Eclipse Plugin must be installed before importing the project.
-
-DEPLOY
-======
-
-First you need to build the .war file and then use a Servlet container to serve it. In Apache Tomcat 7.0.23 you have to copy the .war file into the webapps/ directory and it will unpack the app at startup. You can also unpack it by yourself with "jar xvf tsdash.war", as the .war file is a regular archive.
-
-Gnuplot
--------
-
-Additionally, you have to install Gnuplot 4.2 or newer and to make it accessible from /usr/local/bin/gnuplot (symlink works). Gnuplot will generate static images and these images have to be served somehow. What I did is that I've used nginx to serve the plots. The mapping between files and URLs can be configured with the "plot.tsdash.urlpattern" property from tsdash.properties file. The default port used for serving the plots is 8090.
-So Gnuplot creates the files on the disk, and nginx is serving them through the generated URL.
-For example, my configuration is using nginx to listen on 8090 and serves the files from the /var/www/tsdash/plots dir. Hence, the URLs will look like http://host:8090/plots/34343.png. The advantage of separating plot serving from the app itself is that it's more flexible to use a different webserver for serving the plots, that might even be on a different machine. 
-
-TSDash can work without Gnuplot, but you will have to use only interactive charts, which are being rendered in the browser.
-
-CONFIGURATION
-============
-
-conf/tsdash.properties - contains parameters for OpenTSDB - table names and zookeeper quorom, as well as some configuration for the plot generation process
-conf/log4j.properties - configuration for the log4j package
+For convenience, IntelliJ IDEA 12 (http://www.jetbrains.com/idea/) project files are included. 
