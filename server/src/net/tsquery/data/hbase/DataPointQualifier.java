@@ -13,6 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * removed extraneous code
+ *
+ * @author kevin ortman
+ *
+ */
 package net.tsquery.data.hbase;
 
 public class DataPointQualifier {
@@ -31,15 +38,4 @@ public class DataPointQualifier {
         return packed;
     }
 
-    public static int offsetFromQualifier(byte[] qualifier) {
-        int offset = 0;
-        for (int i = 0; i < QUALIFIER_BYTES; i++) {
-            offset = (offset << i * 8) | (qualifier[i] & 0xFF);
-        }
-        return offset >> QUALIFIER_FLAGS_BITS;
-    }
-
-    public static boolean isFloat(byte[] qualifier) {
-        return (qualifier[QUALIFIER_BYTES - 1] & 0x08) != 0;
-    }
 }

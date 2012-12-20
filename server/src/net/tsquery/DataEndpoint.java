@@ -13,6 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * added jasonp support
+ * modified to call OpenTSDB directly
+ *
+ * @author kevin ortman
+ *
+ */
+
 package net.tsquery;
 
 import net.tsquery.model.MetricQuery;

@@ -13,6 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * added jasonp support
+ *
+ * @author kevin ortman
+ *
+ */
 package net.tsquery;
 
 import java.io.IOException;

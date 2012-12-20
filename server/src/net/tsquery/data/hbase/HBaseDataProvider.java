@@ -13,6 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * removed extraneous code
+ *
+ * @author kevin ortman
+ *
+ */
 package net.tsquery.data.hbase;
 
 import net.tsquery.data.TsdbDataProvider;

@@ -13,6 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * removed extraneous code
+ *
+ * @author kevin ortman
+ *
+ */
+
 package net.tsquery.model;
 
 import net.tsquery.data.hbase.DataPointQualifier;
@@ -31,18 +39,6 @@ public class DataPoint implements Comparable<DataPoint> {
     @Override
     public String toString() {
         return "(" + ts + " -> " + String.format("%.3f", value) + ")";
-    }
-
-    public static double decodeValue(byte[] encoded, byte[] qualifier) {
-        if (DataPointQualifier.isFloat(qualifier)) {
-            if (encoded.length == 8) {
-                return Float.intBitsToFloat(Bytes.toInt(encoded, 4));
-            } else {
-                // length is 4
-                return Float.intBitsToFloat(Bytes.toInt(encoded));
-            }
-        }
-        return Bytes.toLong(encoded);
     }
 
     @Override

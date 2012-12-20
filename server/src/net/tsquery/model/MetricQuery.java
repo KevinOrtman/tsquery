@@ -13,6 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * added downsample parameter
+ *
+ * @author kevin ortman
+ *
+ */
 package net.tsquery.model;
 
 import org.json.simple.JSONArray;

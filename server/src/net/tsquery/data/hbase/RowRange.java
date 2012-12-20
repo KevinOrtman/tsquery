@@ -13,6 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * removed extraneous code
+ *
+ * @author kevin ortman
+ *
+ */
 package net.tsquery.data.hbase;
 
 import java.util.Arrays;
@@ -59,18 +66,6 @@ public class RowRange {
 
     public byte[] getStop() {
         return stop;
-    }
-
-    public byte[] getLast() {
-        return last;
-    }
-
-    public long getStartOffset() {
-        return startOffset;
-    }
-
-    public long getLastOffset() {
-        return lastOffset;
     }
 
     public static long roundTs(long ts) {

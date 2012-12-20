@@ -13,6 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * added jasonp support
+ * removed gnuplot logic
+ * added TSDB dependency
+ *
+ * @author kevin ortman
+ *
+ */
+
 package net.tsquery;
 
 import net.tsquery.data.hbase.HBaseConnection;

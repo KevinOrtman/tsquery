@@ -13,6 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * removed extraneous code
+ *
+ * @author kevin ortman
+ *
+ */
 package net.tsquery.model;
 
 import com.google.common.primitives.UnsignedBytes;
@@ -144,12 +151,6 @@ public class Metric {
             ret += Tag.join(" ", tagsArray.asArray()) + "\n";
             ret += "datapoints sorted: "
                     + arrayIsSorted(timeSeries.get(tagsArray));
-            ret += "\n";
-            /*
-             * int count = 0; for (DataPoint dataPoint :
-             * timeSeries.get(tagsArray)) { ret += " " + dataPoint; if (count ==
-             * 100) { break; } count++; }
-             */
             ret += "\n";
         }
         return ret;

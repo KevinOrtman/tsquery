@@ -13,6 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+/**
+ * removed extraneous code
+ *
+ * @author kevin ortman
+ *
+ */
 package net.tsquery.data.hbase;
 
 import java.io.IOException;
@@ -59,12 +66,6 @@ public class IDMap {
 
     // tags
 
-    public String[] getTags() throws IOException {
-        ImmutableBiMap<String, ID> tagsMap = syncTagsLoader.get();
-        ImmutableSet<String> strings = tagsMap.keySet();
-        return strings.toArray(new String[strings.size()]);
-    }
-
     public ID getTagID(String tag) throws IOException, IDNotFoundException {
         ImmutableBiMap<String, ID> tagsMap = syncTagsLoader.get();
         ID tagID = tagsMap.get(tag);
@@ -84,12 +85,6 @@ public class IDMap {
     }
 
     // tag values
-
-    public String[] getTagValues() throws IOException {
-        ImmutableBiMap<String, ID> tagValuesMap = syncTagValuesLoader.get();
-        ImmutableSet<String> strings = tagValuesMap.keySet();
-        return strings.toArray(new String[strings.size()]);
-    }
 
     public ID getTagValueID(String tagValue) throws IOException,
             IDNotFoundException {
