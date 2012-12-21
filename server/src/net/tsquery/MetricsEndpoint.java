@@ -52,7 +52,6 @@ public class MetricsEndpoint extends TsdbServlet {
         try {
             TsdbDataProvider dataProvider = TsdbDataProviderFactory.get();
             String[] metrics = dataProvider.getMetrics();
-            response.setContentType("text/plain");
             JSONArray encoded = new JSONArray();
             Collections.addAll(encoded, metrics);
 
