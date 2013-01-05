@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+                      http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0"
+         metadata-complete="true">
+
+    <display-name>tsQuery</display-name>
+    <description>
+        tsQuery - JSONP query interface for OpenTSDB
+    </description>
+
+    <servlet>
+        <servlet-name>MetricsEndpoint</servlet-name>
+        <servlet-class>net.tsquery.MetricsEndpoint</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MetricsEndpoint</servlet-name>
+        <url-pattern>/metrics</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>MetricHeaderEndpoint</servlet-name>
+        <servlet-class>net.tsquery.MetricHeaderEndpoint</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MetricHeaderEndpoint</servlet-name>
+        <url-pattern>/header</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>DataEndpoint</servlet-name>
+        <servlet-class>net.tsquery.DataEndpoint</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DataEndpoint</servlet-name>
+        <url-pattern>/data</url-pattern>
+    </servlet-mapping>
+
+</web-app>
