@@ -1,4 +1,4 @@
-<project name="OpenTSDB - tsquery" default="dist" basedir=".">
+<project name="OpenTSDB - tsquery" default="war" basedir=".">
     <description>
       Build file for tsquery
     </description>
@@ -6,13 +6,18 @@
   <property name="build" location="build"/>
   <property name="dist" location="dist"/>
   <property name="lib" location="lib"/>
+  <property name="conf" location="conf" />
 
   <target name="init">
     <mkdir dir="${build}"/>
+	<mkdir dir="etc/tsquery"/>
+	<copy todir="etc/tsquery">
+		<fileset dir="${conf}">
+		</fileset>
+	</copy>
   </target>
 
-  <target name="compile" depends="init"
-        description="compile the source ">
+  <target name="compile" depends="init" description="compile the source ">
     <javac srcdir="${src}" destdir="${build}" debug="true" debuglevel="lines,vars,source" includeantruntime="false">
       <classpath>
 		<fileset dir="${lib}" includes="*.jar"/>
@@ -20,13 +25,20 @@
     </javac>
   </target>
 
-  <target name="dist" depends="compile"
-        description="generate the distribution" >
+  <target name="war" depends="compile" description="generate the distribution" >
+	<echo>Building the server component...</echo>
 	<delete file="${build}/tsquery.jar" quiet="true" />
     <jar jarfile="${build}/tsquery.jar" basedir="${build}"/>
+	<echo>Packing the .war file</echo>
+	<war destfile="tsquery.war" webxml="web/WEB-INF/web.xml">
+	  <lib dir="lib" />
+	  <lib file="${build}/tsquery.jar" />
+	</war>
   </target>
 
   <target name="clean" description="clean up" >
     <delete dir="${build}"/>
+	<delete file="tsquery.war" failonerror="false" />
   </target>
+  
 </project>
