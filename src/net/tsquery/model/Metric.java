@@ -36,7 +36,9 @@ public class Metric {
 
     private final byte[] id;
     private final String name;
-    public TreeMap<TagsArray, ArrayList<DataPoint>> timeSeries = new TreeMap<TagsArray, ArrayList<DataPoint>>();
+    public TreeMap<TagsArray, ArrayList<DataPoint>> timeSeries =
+                   new TreeMap<TagsArray, ArrayList<DataPoint>>(
+                       Tag.arrayComparator());
 
     public Metric(byte[] id, String name) {
         this.id = id;
