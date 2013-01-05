@@ -129,6 +129,8 @@ public class DataEndpoint extends TsdbServlet {
             JSONArray dataArray = new JSONArray();
             StringBuilder nameBuilder = new StringBuilder();
 
+            nameBuilder.append(dataPoints.metricName() + ": ");
+
             Map<String,String> tags = dataPoints.getTags();
             for (String s : tags.keySet()) {
                 nameBuilder.append(String.format("%s=%s, ", s, tags.get(s)) );
