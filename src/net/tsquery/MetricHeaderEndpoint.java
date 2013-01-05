@@ -30,6 +30,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -64,19 +65,33 @@ public class MetricHeaderEndpoint extends TsdbServlet {
         try {
             // decode parameters
             long ts = System.currentTimeMillis();
+
+            // decode parameters
             String jsonParams = request.getParameter("params");
             if (jsonParams == null) {
-                throw new Exception("Parameters not specified");
+                throw new IllegalArgumentException("Required parameter 'params' not specified");
             }
+
             JSONObject jsonParamsObj = (JSONObject) JSONValue.parse(jsonParams);
-            long tsFrom = (Long) jsonParamsObj.get("tsFrom");
-            long tsTo = (Long) jsonParamsObj.get("tsTo");
-            String metricName = (String) jsonParamsObj.get("metric");
-            HashMap<String, String> tags = MetricQuery
-                    .decodeTags((JSONObject) jsonParamsObj.get("tags"));
-            if (metricName == null) {
-                throw new Exception("Missing parameter");
+            if(jsonParamsObj == null) {
+                throw new IllegalArgumentException("Required parameter 'params' is not a valid JSON object");
             }
+
+            long tsFrom = this.getRequiredTimeStamp(jsonParamsObj, "tsFrom");
+            long tsTo = this.getRequiredTimeStamp(jsonParamsObj, "tsTo");
+
+            String metricName = (String) jsonParamsObj.get("metric");
+            if (metricName == null || metricName.length() == 0) {
+                throw new IllegalArgumentException("Required parameter 'metric' string not specified or empty");
+            }
+
+            JSONObject tagObj = (JSONObject) jsonParamsObj.get("tags");
+            if(tagObj == null) {
+                throw new IllegalArgumentException("Required parameter 'tags' is not a valid JSON object");
+            }
+
+            HashMap<String, String> tags = MetricQuery.decodeTags(tagObj);
+
             TsdbDataProvider dataProvider = TsdbDataProviderFactory.get();
             Metric metric = dataProvider.fetchMetricHeader(metricName, tsFrom, tsTo, tags);
 
