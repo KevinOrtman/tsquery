@@ -22,17 +22,13 @@
  */
 package net.tsquery.model;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class MetricQuery {
 
     public String name;
     public HashMap<String, String> tags = null;
-    public String[] orders;
     public String aggregator = null;
     public int downsample = 0;
     public boolean rate = false;
@@ -43,14 +39,6 @@ public class MetricQuery {
             tags.put((String) tagKeyObj, (String) tagsObj.get(tagKeyObj));
         }
         return tags;
-    }
-
-    private static String[] decodeArray(JSONArray jsonArray) {
-        String[] array = new String[jsonArray.size()];
-        for (int i = 0; i < array.length; i++) {
-            array[i] = (String) jsonArray.get(i);
-        }
-        return array;
     }
 
     public static MetricQuery fromJSONObject(JSONObject src) {
@@ -64,7 +52,6 @@ public class MetricQuery {
         if(src.get("aggregator") != null)
             newQuery.aggregator = ((String)src.get("aggregator")).toLowerCase();
         newQuery.downsample = tryParse(src.get("downsample"), 0);
-        newQuery.orders = decodeArray((JSONArray) src.get("orders"));
 
         return newQuery;
     }
@@ -73,7 +60,6 @@ public class MetricQuery {
     public String toString() {
         String ret = "Name: " + name + '\n';
         ret += "tags: " + tags + '\n';
-        ret += "orders: " + Arrays.toString(orders) + '\n';
         ret += "aggregator: " + aggregator + '\n';
         ret += "downsample: " + downsample + '\n';
         ret += "rate: " + rate + '\n';
