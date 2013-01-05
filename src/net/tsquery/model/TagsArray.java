@@ -33,40 +33,12 @@ public class TagsArray {
     private final IDMap idMap;
 
     private final Tag[] tags;
-    private int[] order;
     private ID[] priTags = NATURAL_ORDER;
 
     public TagsArray(Tag[] tags, ID[] priTags, IDMap idMap) {
         this.tags = tags;
         this.priTags = priTags;
         this.idMap = idMap;
-        createOrderSet(priTags);
-    }
-
-    private void createOrderSet(ID[] tagsPri) {
-        boolean[] isPri = new boolean[tags.length];
-        Arrays.fill(isPri, false);
-        order = new int[tags.length];
-        int head = 0; // this is the head of the order stack
-        for (ID priTagKey : tagsPri) {
-            int priTagPos = Arrays.binarySearch(tags, new Tag(priTagKey,
-                    priTagKey, idMap), Tag.keyComparator());
-            if (priTagPos < 0) {
-                System.err.println("Tag ID " + priTagKey + " not found in this"
-                        + " tag list");
-                continue;
-            }
-            isPri[priTagPos] = true;
-            order[head] = priTagPos;
-            head++;
-        }
-        // the unspecified tags are ordered by natural ordering
-        for (int i = 0; i < tags.length; i++) {
-            if (!isPri[i]) {
-                order[head] = i;
-                head++;
-            }
-        }
     }
 
     public TagsArray copy() {
@@ -74,31 +46,11 @@ public class TagsArray {
         return new TagsArray(newTags, priTags, idMap);
     }
 
-    public int binarySearch(Tag tag) {
-        return Arrays.binarySearch(tags, tag, Tag.keyComparator());
-    }
-
-    public Tag get(int index) {
-        return tags[index];
-    }
-
-    public Tag getOrdered(int index) {
-        return tags[order[index]];
-    }
-
-    public int length() {
-        return tags.length;
-    }
-
     @Override
     public String toString() {
-        String ret = "Natural order: ";
+        String ret = "";
         for (Tag tag : tags) {
             ret += tag + " ";
-        }
-        ret += "\nUser given order:";
-        for (int anOrder : order) {
-            ret += tags[anOrder] + " ";
         }
         return ret;
     }

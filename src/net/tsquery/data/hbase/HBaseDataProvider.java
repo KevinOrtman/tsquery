@@ -61,27 +61,20 @@ public class HBaseDataProvider implements TsdbDataProvider {
         ID metricID = idMap.getMetricID(metric);
         Metric metricData = new Metric(metricID.id, metric);
         RowRange rowRange = new RowRange(metricID.id, startTs, toTs);
-        RowTagFilter tagFilter = new RowTagFilter(tags, idMap);
 
         Scan scan = new Scan(rowRange.getStart(), rowRange.getStop());
-        if (tags.size() > 0) {
-            scan.setFilter(tagFilter.getRemoteFilter());
-        }
+
         ResultScanner scanner = dataTable.getScanner(scan);
         int count = 0;
-        int falsePositives = 0;
         for (Result result : scanner) {
             RowKey rowKey = new RowKey(result.getRow(), idMap);
             TagsArray rowTags = rowKey.getTags(TagsArray.NATURAL_ORDER);
-            if (tagFilter.filterRow(rowTags.asArray())) {
-                falsePositives++;
-            } else if (!metricData.timeSeries.containsKey(rowTags)) {
+            if (!metricData.timeSeries.containsKey(rowTags)) {
                 metricData.timeSeries.put(rowTags, new ArrayList<DataPoint>());
             }
             count++;
         }
-        logger.info("Fetching header for " + metric + ": " + count + " rows, "
-                + falsePositives + " false positives");
+        logger.info("Fetching header for " + metric + ": " + count + " rows. ");
         return metricData;
     }
 

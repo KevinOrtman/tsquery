@@ -36,20 +36,11 @@ public class Metric {
 
     private final byte[] id;
     private final String name;
-    public TreeMap<TagsArray, ArrayList<DataPoint>> timeSeries =
-        new TreeMap<TagsArray, ArrayList<DataPoint>>(
-            Tag.arrayComparator());
+    public TreeMap<TagsArray, ArrayList<DataPoint>> timeSeries = new TreeMap<TagsArray, ArrayList<DataPoint>>();
 
     public Metric(byte[] id, String name) {
         this.id = id;
         this.name = name;
-    }
-
-    public ArrayList<DataPoint> getDataPoints(TagsArray tagsArray) {
-        if (!timeSeries.containsKey(tagsArray)) {
-            timeSeries.put(tagsArray, new ArrayList<DataPoint>());
-        }
-        return timeSeries.get(tagsArray);
     }
 
     private static boolean arrayIsSorted(ArrayList<DataPoint> array) {
