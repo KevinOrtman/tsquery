@@ -15,14 +15,11 @@
  */
 package net.tsquery.data;
 
-import java.util.Map;
-
 import net.tsquery.model.Metric;
 
 public interface TsdbDataProvider {
 
-    Metric fetchMetricHeader(String metric, long startTs, long toTs,
-            Map<String, String> tags) throws Exception;
+    Metric fetchMetricHeader(String metric, long startTs, long toTs) throws Exception;
 
     String[] getMetrics() throws Exception;
 

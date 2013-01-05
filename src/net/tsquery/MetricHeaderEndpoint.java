@@ -22,22 +22,17 @@
  */
 package net.tsquery;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.HashMap;
+import net.tsquery.data.TsdbDataProvider;
+import net.tsquery.data.TsdbDataProviderFactory;
+import net.tsquery.model.Metric;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-
-import net.tsquery.data.TsdbDataProvider;
-import net.tsquery.data.TsdbDataProviderFactory;
-import net.tsquery.model.Metric;
-import net.tsquery.model.MetricQuery;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * fetches the header information (tags set, common tags) for a given time frame
@@ -85,21 +80,14 @@ public class MetricHeaderEndpoint extends TsdbServlet {
                 throw new IllegalArgumentException("Required parameter 'metric' string not specified or empty");
             }
 
-            JSONObject tagObj = (JSONObject) jsonParamsObj.get("tags");
-            if(tagObj == null) {
-                throw new IllegalArgumentException("Required parameter 'tags' is not a valid JSON object");
-            }
-
-            HashMap<String, String> tags = MetricQuery.decodeTags(tagObj);
-
             TsdbDataProvider dataProvider = TsdbDataProviderFactory.get();
-            Metric metric = dataProvider.fetchMetricHeader(metricName, tsFrom, tsTo, tags);
+            Metric metric = dataProvider.fetchMetricHeader(metricName, tsFrom, tsTo);
 
             doSendResponse(request, out, metric.toJSONString());
 
             long loadTime = System.currentTimeMillis() - ts;
             logger.info("[Header] time frame: " + (tsTo - tsFrom) + "s, "
-                    + "metric: " + metricName + ", tags: " + tags + ", "
+                    + "metric: " + metricName + ", "
                     + "load time: " + loadTime + "ms");
         } catch (Exception e) {
             out.println(getErrorResponse(e));

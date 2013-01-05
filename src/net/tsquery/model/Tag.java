@@ -33,17 +33,6 @@ public class Tag {
         }
     };
 
-    private static Comparator<Tag> keyValueComparator = new Comparator<Tag>() {
-        @Override
-        public int compare(Tag t1, Tag t2) {
-            int keyCmp = t1.keyID.compareTo(t2.keyID);
-            if (keyCmp == 0) {
-                return t1.valueID.compareTo(t2.valueID);
-            }
-            return keyCmp;
-        }
-    };
-
     private static class TagsArrayComparator implements Comparator<TagsArray> {
 
         private int[] map = new int[0];
@@ -127,15 +116,8 @@ public class Tag {
         return ret;
     }
 
-    public String toHexString() {
-        return keyID.toHexString() + valueID.toHexString();
-    }
-
     public static Comparator<Tag> keyComparator() {
         return keyComparator;
     }
 
-    public static Comparator<Tag> keyValueComparator() {
-        return keyValueComparator;
-    }
 }

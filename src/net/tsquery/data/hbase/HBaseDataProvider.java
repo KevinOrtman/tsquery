@@ -56,8 +56,7 @@ public class HBaseDataProvider implements TsdbDataProvider {
     }
 
     @Override
-    public Metric fetchMetricHeader(String metric, long startTs, long toTs,
-            Map<String, String> tags) throws Exception {
+    public Metric fetchMetricHeader(String metric, long startTs, long toTs) throws Exception {
         ID metricID = idMap.getMetricID(metric);
         Metric metricData = new Metric(metricID.id, metric);
         RowRange rowRange = new RowRange(metricID.id, startTs, toTs);
