@@ -43,15 +43,25 @@ public class MetricQuery {
 
     public static MetricQuery fromJSONObject(JSONObject src) {
         MetricQuery newQuery = new MetricQuery();
+
         newQuery.name = (String) src.get("name");
+        if(newQuery.name == null || newQuery.name.length() == 0)
+            throw new IllegalArgumentException("Required parameter 'name' not specified for all metrics");
+
         if (src.get("rate") != null) {
             newQuery.rate = (Boolean) src.get("rate");
         }
+
+        newQuery.tags = new HashMap<String, String>();
+        if(src.get("tags") != null)
         newQuery.tags = decodeTags((JSONObject) src.get("tags"));
+
         newQuery.aggregator = "sum";
         if(src.get("aggregator") != null)
             newQuery.aggregator = ((String)src.get("aggregator")).toLowerCase();
-        newQuery.downsample = tryParse(src.get("downsample"), 0);
+
+        if(src.get("downsample") != null)
+            newQuery.downsample = tryParse(src.get("downsample"), 0);
 
         return newQuery;
     }

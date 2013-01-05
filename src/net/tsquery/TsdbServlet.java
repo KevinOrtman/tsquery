@@ -47,6 +47,8 @@ public class TsdbServlet extends HttpServlet {
     private static final String TSDB_UID_TABLE = "tsdb-uid";
     private static final short FLUSH_INTERVAL = 1000;
 
+    private static boolean s_returnStackTrace = false;
+
     public static final String PROPERTIES_FILE = "/etc/tsquery/tsquery.properties";
     public static final String LOG4J_PROPERTIES_FILE = "/etc/tsquery/log4j.properties";
 
@@ -62,6 +64,10 @@ public class TsdbServlet extends HttpServlet {
             HBaseConnection.configure(tsdbConf);
 
             String quorum = tsdbConf.getProperty("hbase.zookeeper.quorum","localhost");
+
+            String returnStackTrace = tsdbConf.getProperty("hbase.zookeeper.quorum","localhost");
+            if(returnStackTrace != null && returnStackTrace.equalsIgnoreCase("true"))
+                s_returnStackTrace = true;
 
             client = new org.hbase.async.HBaseClient(quorum);
 
@@ -88,13 +94,44 @@ public class TsdbServlet extends HttpServlet {
         loadConfiguration();
     }
 
+    protected long getRequiredTimeStamp(JSONObject obj, String key)   {
+        if(!obj.containsKey(key))
+            throw new IllegalArgumentException("Required timestamp '" + key + "' missing.  Please add it to the query string.");
+
+        long val;
+
+        try {
+            Object o = obj.get(key);
+
+            if(o instanceof Long) {
+                val = (Long)o;
+            }
+            else {
+                val = ISO8601DateParser.parse(o.toString()).getTime();
+            }
+
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException("Required timestamp '" + key + "' must be either an epoch timestamp or an ISO 8601 formatted date.");
+        }
+
+        if(val > 1000000000000L)
+            val = val / 1000L;
+
+        return val;
+    }
+
     @SuppressWarnings("unchecked")
     protected String getErrorResponse(Throwable e) {
         JSONObject errObj = new JSONObject();
         errObj.put("error", e.getMessage());
-        StringWriter stackTrace = new StringWriter();
-        e.printStackTrace(new PrintWriter(stackTrace));
-        errObj.put("stacktrace", stackTrace.toString());
+
+        if(s_returnStackTrace) {
+            StringWriter stackTrace = new StringWriter();
+            e.printStackTrace(new PrintWriter(stackTrace));
+            errObj.put("stacktrace", stackTrace.toString());
+        }
+
         return errObj.toJSONString();
     }
 

@@ -72,16 +72,22 @@ public class DataEndpoint extends TsdbServlet {
             // decode parameters
             String jsonParams = request.getParameter("params");
             if (jsonParams == null) {
-                throw new Exception("Parameters not specified");
+                throw new IllegalArgumentException("Required parameter 'params' not specified");
             }
 
             JSONObject jsonParamsObj = (JSONObject) JSONValue.parse(jsonParams);
-            long tsFrom = (Long) jsonParamsObj.get("tsFrom");
-            long tsTo = (Long) jsonParamsObj.get("tsTo");
-            JSONArray metricsArray = (JSONArray) jsonParamsObj.get("metrics");
-            if (metricsArray.size() == 0) {
-                throw new Exception("No metrics to fetch");
+            if(jsonParamsObj == null) {
+                throw new IllegalArgumentException("Required parameter 'params' is not a valid JSON object");
             }
+
+            long tsFrom = this.getRequiredTimeStamp(jsonParamsObj, "tsFrom");
+            long tsTo = this.getRequiredTimeStamp(jsonParamsObj, "tsTo");
+
+            JSONArray metricsArray = (JSONArray) jsonParamsObj.get("metrics");
+            if (metricsArray == null || metricsArray.size() == 0) {
+                throw new IllegalArgumentException("Required parameter 'metrics' array not specified or empty");
+            }
+
             Query[] queries = new Query[metricsArray.size()];
             for (int i = 0; i < metricsArray.size(); i++) {
                 MetricQuery metricQuery = MetricQuery.fromJSONObject((JSONObject) metricsArray.get(i));
