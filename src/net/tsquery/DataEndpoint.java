@@ -31,6 +31,7 @@
 
 package net.tsquery;
 
+import net.opentsdb.graph.Plot;
 import net.tsquery.model.MetricQuery;
 import net.opentsdb.core.Aggregator;
 import net.opentsdb.core.DataPoint;
@@ -46,9 +47,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 
 public class DataEndpoint extends TsdbServlet {
 
@@ -75,11 +74,17 @@ public class DataEndpoint extends TsdbServlet {
         PrintWriter out = response.getWriter();
         try {
             JSONObject responseObj = new JSONObject();
+            boolean dygraphOutput = false;
 
             // decode parameters
             String jsonParams = request.getParameter("params");
             if (jsonParams == null) {
                 throw new IllegalArgumentException("Required parameter 'params' not specified");
+            }
+
+            String output = request.getParameter("output");
+            if(output != null && output.equalsIgnoreCase("dygraph")) {
+                dygraphOutput = true;
             }
 
             JSONObject jsonParamsObj = (JSONObject) JSONValue.parse(jsonParams);
@@ -110,7 +115,7 @@ public class DataEndpoint extends TsdbServlet {
             responseObj.put("loadtime", System.currentTimeMillis() - ts);
 
             ts = System.currentTimeMillis();
-            responseObj.put("series", PlotToJSONArray(plot));
+            responseObj.put("series", PlotToJSONArray(plot, dygraphOutput));
             responseObj.put("serializationtime", System.currentTimeMillis() - ts);
 
             doSendResponse(request, out, responseObj.toJSONString());
@@ -121,15 +126,100 @@ public class DataEndpoint extends TsdbServlet {
         out.close();
     }
 
+    public JSONArray PlotToJSONArray(Plot plot, boolean dygraphOutput) {
+        if(dygraphOutput) {
+            return PlotToDygraphJSONArray(plot);
+        } else {
+            return PlotToStandardJSONArray(plot);
+        }
+
+    }
+
     @SuppressWarnings("unchecked")
-    public JSONArray PlotToJSONArray(net.opentsdb.graph.Plot plot) {
+    private JSONArray PlotToDygraphJSONArray(Plot plot) {
+        JSONArray dataArray = new JSONArray();
+        int dpCount = 0;
+
+        JSONArray nameArray = new JSONArray();
+        nameArray.add("Date");
+        for (DataPoints dataPoints : plot.getDataPoints()) {
+            StringBuilder nameBuilder = new StringBuilder();
+
+            nameBuilder.append(dataPoints.metricName()).append(":");
+
+            Map<String,String> tags = dataPoints.getTags();
+            for (String s : tags.keySet()) {
+                nameBuilder.append(String.format(" %s=%s", s, tags.get(s)) );
+            }
+
+            nameArray.add(nameBuilder.toString());
+            dpCount++;
+        }
+        dataArray.add(nameArray);
+
+
+        TreeMap<Long, Object[]> tsMap = new TreeMap<Long, Object[]>();
+        int dpIndex = 0;
+        for (DataPoints dataPoints : plot.getDataPoints()) {
+
+            for (DataPoint point : dataPoints) {
+                long timestamp = point.timestamp() * 1000;
+
+                if(!tsMap.containsKey(timestamp)) {
+                    Object[] values = new Object[dpCount];
+                    values[dpIndex] = getValue(point);
+                    tsMap.put(timestamp, values);
+                }
+                else {
+                    //noinspection MismatchedReadAndWriteOfArray
+                    Object[] values = tsMap.get(timestamp);
+                    values[dpIndex] = getValue(point);
+                }
+            }
+
+            dpIndex++;
+        }
+
+        for(Map.Entry<Long,Object[]> entry : tsMap.entrySet()) {
+            JSONArray entryArray = new JSONArray();
+            entryArray.add(entry.getKey());
+            Object[] points = entry.getValue();
+
+            for(dpIndex = 0; dpIndex < dpCount; dpIndex++ ) {
+                entryArray.add(points[dpIndex]);
+            }
+
+            dataArray.add(entryArray);
+        }
+
+
+        return dataArray;
+    }
+
+    private Object getValue(DataPoint point) {
+        Object value;
+        if (point.isInteger()) {
+            value = point.longValue();
+        } else {
+            final double doubleValue = point.doubleValue();
+            if (doubleValue != doubleValue || Double.isInfinite(doubleValue)) {
+                throw new IllegalStateException("invalid datapoint found");
+            }
+            value = doubleValue;
+        }
+
+        return value;
+    }
+
+    @SuppressWarnings("unchecked")
+    private JSONArray PlotToStandardJSONArray(Plot plot) {
         JSONArray seriesArray = new JSONArray();
 
         for (DataPoints dataPoints : plot.getDataPoints()) {
             JSONArray dataArray = new JSONArray();
             StringBuilder nameBuilder = new StringBuilder();
 
-            nameBuilder.append(dataPoints.metricName() + ": ");
+            nameBuilder.append(dataPoints.metricName()).append(": ");
 
             Map<String,String> tags = dataPoints.getTags();
             for (String s : tags.keySet()) {
@@ -140,15 +230,8 @@ public class DataEndpoint extends TsdbServlet {
             for (DataPoint point : dataPoints) {
                 JSONArray values = new JSONArray();
                 values.add(point.timestamp() * 1000);
-                if (point.isInteger()) {
-                    values.add(point.longValue());
-                } else {
-                    final double value = point.doubleValue();
-                    if (value != value || Double.isInfinite(value)) {
-                        throw new IllegalStateException("invalid datapoint found");
-                    }
-                    values.add(value);
-                }
+                values.add(getValue(point));
+
                 dataArray.add(values);
             }
 
