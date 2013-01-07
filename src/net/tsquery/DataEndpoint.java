@@ -156,7 +156,7 @@ public class DataEndpoint extends TsdbServlet {
             nameArray.add(nameBuilder.toString());
             dpCount++;
         }
-        plotObject.put("labels", dataArray);
+        plotObject.put("labels", nameArray);
 
         TreeMap<Long, Object[]> tsMap = new TreeMap<Long, Object[]>();
         int dpIndex = 0;
