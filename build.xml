@@ -42,6 +42,6 @@
   </target>
   
   <target name="test" depends="compile" description="test" >
-  <target>
+  </target>
   
 </project>
