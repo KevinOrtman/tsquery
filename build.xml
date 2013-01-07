@@ -41,4 +41,7 @@
 	<delete file="tsquery.war" failonerror="false" />
   </target>
   
+  <target name="test" depends="compile" description="test" >
+  <target>
+  
 </project>
