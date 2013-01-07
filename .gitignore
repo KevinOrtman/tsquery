@@ -1,5 +1,7 @@
 *~
 *.war
+build/**/*
+build
 out/**/*
 out
 etc
