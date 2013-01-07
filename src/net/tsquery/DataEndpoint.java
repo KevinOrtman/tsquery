@@ -115,7 +115,7 @@ public class DataEndpoint extends TsdbServlet {
             responseObj.put("loadtime", System.currentTimeMillis() - ts);
 
             ts = System.currentTimeMillis();
-            responseObj.put("series", PlotToJSONArray(plot, dygraphOutput));
+            responseObj.put("series", PlotToJSON(plot, dygraphOutput));
             responseObj.put("serializationtime", System.currentTimeMillis() - ts);
 
             doSendResponse(request, out, responseObj.toJSONString());
@@ -126,17 +126,18 @@ public class DataEndpoint extends TsdbServlet {
         out.close();
     }
 
-    public JSONArray PlotToJSONArray(Plot plot, boolean dygraphOutput) {
+    public JSONObject PlotToJSON(Plot plot, boolean dygraphOutput) {
         if(dygraphOutput) {
-            return PlotToDygraphJSONArray(plot);
+            return PlotToDygraphJSON(plot);
         } else {
-            return PlotToStandardJSONArray(plot);
+            return PlotToStandardJSON(plot);
         }
 
     }
 
     @SuppressWarnings("unchecked")
-    private JSONArray PlotToDygraphJSONArray(Plot plot) {
+    private JSONObject PlotToDygraphJSON(Plot plot) {
+        JSONObject plotObject = new JSONObject();
         JSONArray dataArray = new JSONArray();
         int dpCount = 0;
 
@@ -155,8 +156,7 @@ public class DataEndpoint extends TsdbServlet {
             nameArray.add(nameBuilder.toString());
             dpCount++;
         }
-        dataArray.add(nameArray);
-
+        plotObject.put("labels", dataArray);
 
         TreeMap<Long, Object[]> tsMap = new TreeMap<Long, Object[]>();
         int dpIndex = 0;
@@ -192,8 +192,9 @@ public class DataEndpoint extends TsdbServlet {
             dataArray.add(entryArray);
         }
 
+        plotObject.put("values", dataArray);
 
-        return dataArray;
+        return plotObject;
     }
 
     private Object getValue(DataPoint point) {
@@ -212,7 +213,8 @@ public class DataEndpoint extends TsdbServlet {
     }
 
     @SuppressWarnings("unchecked")
-    private JSONArray PlotToStandardJSONArray(Plot plot) {
+    private JSONObject PlotToStandardJSON(Plot plot) {
+        JSONObject plotObject = new JSONObject();
         JSONArray seriesArray = new JSONArray();
 
         for (DataPoints dataPoints : plot.getDataPoints()) {
@@ -242,7 +244,9 @@ public class DataEndpoint extends TsdbServlet {
             seriesArray.add(series);
         }
 
-        return seriesArray;
+        plotObject.put("plot", seriesArray);
+
+        return plotObject;
     }
 
 }
