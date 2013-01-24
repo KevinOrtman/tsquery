@@ -107,6 +107,8 @@ public class DataEndpoint extends TsdbServlet {
                 queries[i] = _tsdb.newQuery();
                 queries[i].setTimeSeries(metricQuery.name, metricQuery.tags,
                         _aggregators.get(metricQuery.aggregator), metricQuery.rate);
+                if(metricQuery.downsample > 0)
+                        queries[i].downsample(metricQuery.downsample, _aggregators.get(metricQuery.aggregator));
             }
 
 
