@@ -151,7 +151,7 @@ public class DataEndpoint extends TsdbServlet {
         if(dygraphOutput) {
             return PlotToDygraphJSON(plot, topN);
         } else {
-            return PlotToStandardJSON(plot);
+            return PlotToStandardJSON(plot, topN);
         }
 
     }
@@ -270,11 +270,14 @@ public class DataEndpoint extends TsdbServlet {
     }
 
     @SuppressWarnings("unchecked")
-    private JSONObject PlotToStandardJSON(Plot plot) {
-        JSONObject plotObject = new JSONObject();
+    private JSONObject PlotToStandardJSON(Plot plot, int topN) {
+        final JSONObject plotObject = new JSONObject();
         JSONArray seriesArray = new JSONArray();
 
+        final TreeMap<Double, JSONObject> weightMap = new TreeMap<Double, JSONObject>(Collections.reverseOrder());
+
         for (DataPoints dataPoints : plot.getDataPoints()) {
+            double weight = 0;
             JSONArray dataArray = new JSONArray();
             StringBuilder nameBuilder = new StringBuilder();
 
@@ -287,18 +290,34 @@ public class DataEndpoint extends TsdbServlet {
             nameBuilder.setLength(nameBuilder.length() - 2);
 
             for (DataPoint point : dataPoints) {
+                double dpValue = getValue(point);
                 JSONArray values = new JSONArray();
                 values.add(point.timestamp() * 1000);
-                values.add(getValue(point));
+                values.add(dpValue);
+
+                weight += ((dpValue) / 1000000.0);
 
                 dataArray.add(values);
             }
+
 
             JSONObject series = new JSONObject();
             series.put("name", nameBuilder.toString());
             series.put("data", dataArray);
 
-            seriesArray.add(series);
+            while(weightMap.containsKey(weight))
+                weight -= 0.00000001;
+
+            weightMap.put(weight, series);
+        }
+
+        int counter = 0;
+        for (Map.Entry<Double, JSONObject> entry : weightMap.entrySet()) {
+            seriesArray.add(entry.getValue());
+
+            ++counter;
+            if((topN > 0) && (counter >= topN))
+                break;
         }
 
         plotObject.put("plot", seriesArray);
