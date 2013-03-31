@@ -87,6 +87,8 @@ public class DataEndpoint extends TsdbServlet {
                 dygraphOutput = true;
             }
 
+            int topN = this.getTopN(request, -1);
+
             JSONObject jsonParamsObj = (JSONObject) JSONValue.parse(jsonParams);
             if(jsonParamsObj == null) {
                 throw new IllegalArgumentException("Required parameter 'params' is not a valid JSON object");
@@ -117,7 +119,7 @@ public class DataEndpoint extends TsdbServlet {
             responseObj.put("loadtime", System.currentTimeMillis() - ts);
 
             ts = System.currentTimeMillis();
-            responseObj.put("series", PlotToJSON(plot, dygraphOutput));
+            responseObj.put("series", PlotToJSON(plot, dygraphOutput, topN));
             responseObj.put("serializationtime", System.currentTimeMillis() - ts);
 
             doSendResponse(request, out, responseObj.toJSONString());
@@ -128,9 +130,26 @@ public class DataEndpoint extends TsdbServlet {
         out.close();
     }
 
-    public JSONObject PlotToJSON(Plot plot, boolean dygraphOutput) {
+    private int getTopN(HttpServletRequest request, int defaultValue) {
+        String strval = request.getParameter("topN");
+        int value = defaultValue;
+
+        if(strval != null)    {
+            try
+            {
+                value = Integer.parseInt(strval);
+            }
+            catch(NumberFormatException nfe)
+            {
+            }
+        }
+
+        return value;
+    }
+
+    public JSONObject PlotToJSON(Plot plot, boolean dygraphOutput, int topN) {
         if(dygraphOutput) {
-            return PlotToDygraphJSON(plot);
+            return PlotToDygraphJSON(plot, topN);
         } else {
             return PlotToStandardJSON(plot);
         }
@@ -138,14 +157,86 @@ public class DataEndpoint extends TsdbServlet {
     }
 
     @SuppressWarnings("unchecked")
-    private JSONObject PlotToDygraphJSON(Plot plot) {
-        JSONObject plotObject = new JSONObject();
-        JSONArray dataArray = new JSONArray();
-        int dpCount = 0;
+    private JSONObject PlotToDygraphJSON(Plot plot, int topN) {
+        final JSONObject plotObject = new JSONObject();
+        final JSONArray nameArray = new JSONArray();
+        final JSONArray dataArray = new JSONArray();
+        final int dpCount = plot.getDataPointsSize();
 
-        JSONArray nameArray = new JSONArray();
-        nameArray.add("Date");
+        final TreeMap<Long, double[]> tsMap = new TreeMap<Long, double[]>();
+        final double[] weight = new double[dpCount];
+
+        int dpIndex = 0;
         for (DataPoints dataPoints : plot.getDataPoints()) {
+
+            for (DataPoint point : dataPoints) {
+                long timestamp = point.timestamp() * 1000;
+
+                if(!tsMap.containsKey(timestamp)) {
+                    double[] values = new double[dpCount];
+                    values[dpIndex] = getValue(point);
+                    tsMap.put(timestamp, values);
+
+                    weight[dpIndex] += ((values[dpIndex]) / 1000000.0);
+                }
+                else {
+                    //noinspection MismatchedReadAndWriteOfArray
+                    double[] values = tsMap.get(timestamp);
+                    values[dpIndex] = getValue(point);
+                    weight[dpIndex] += ((values[dpIndex]) / 1000000.0);
+                }
+            }
+
+            dpIndex++;
+        }
+
+        HashMap<Integer, Boolean> includeMap = null;
+        // are we performing a topN lookup?
+        if(topN > 0) {
+            includeMap = new HashMap<Integer, Boolean>(topN);
+            TreeMap<Double, Integer> weightMap = new TreeMap<Double, Integer>(Collections.reverseOrder());
+            for(int i=0; i < dpCount; i++){
+                while(weightMap.containsKey(weight[i]))
+                    weight[i] -= 0.00000001;
+
+                weightMap.put(weight[i], i);
+            }
+
+            int series = 0;
+            for (Map.Entry<Double, Integer> entry : weightMap.entrySet()) {
+                includeMap.put(entry.getValue(), true);
+
+                ++series;
+                if(series >= topN)
+                    break;
+            }
+        }
+
+        for(Map.Entry<Long,double[]> entry : tsMap.entrySet()) {
+            JSONArray entryArray = new JSONArray();
+            entryArray.add(entry.getKey());
+            final double[] points = entry.getValue();
+
+            for(dpIndex = 0; dpIndex < dpCount; dpIndex++ ) {
+                if((topN <= 0) || (topN > 0 && includeMap.containsKey(dpIndex))) {
+                    entryArray.add(points[dpIndex]);
+                }
+            }
+
+            dataArray.add(entryArray);
+        }
+
+        // First column is always the Date
+        nameArray.add("Date");
+
+        int index = -1;
+        for (DataPoints dataPoints : plot.getDataPoints()) {
+            index++;
+
+            // if we are in a topN query and the current index is not included, skip this iteration
+            if(topN > 0 && !includeMap.containsKey(index))
+                continue;
+
             StringBuilder nameBuilder = new StringBuilder();
 
             nameBuilder.append(dataPoints.metricName()).append(":");
@@ -156,53 +247,17 @@ public class DataEndpoint extends TsdbServlet {
             }
 
             nameArray.add(nameBuilder.toString());
-            dpCount++;
         }
         plotObject.put("labels", nameArray);
-
-        TreeMap<Long, Object[]> tsMap = new TreeMap<Long, Object[]>();
-        int dpIndex = 0;
-        for (DataPoints dataPoints : plot.getDataPoints()) {
-
-            for (DataPoint point : dataPoints) {
-                long timestamp = point.timestamp() * 1000;
-
-                if(!tsMap.containsKey(timestamp)) {
-                    Object[] values = new Object[dpCount];
-                    values[dpIndex] = getValue(point);
-                    tsMap.put(timestamp, values);
-                }
-                else {
-                    //noinspection MismatchedReadAndWriteOfArray
-                    Object[] values = tsMap.get(timestamp);
-                    values[dpIndex] = getValue(point);
-                }
-            }
-
-            dpIndex++;
-        }
-
-        for(Map.Entry<Long,Object[]> entry : tsMap.entrySet()) {
-            JSONArray entryArray = new JSONArray();
-            entryArray.add(entry.getKey());
-            Object[] points = entry.getValue();
-
-            for(dpIndex = 0; dpIndex < dpCount; dpIndex++ ) {
-                entryArray.add(points[dpIndex]);
-            }
-
-            dataArray.add(entryArray);
-        }
-
         plotObject.put("values", dataArray);
 
         return plotObject;
     }
 
-    private Object getValue(DataPoint point) {
-        Object value;
+    private double getValue(DataPoint point) {
+        double value;
         if (point.isInteger()) {
-            value = point.longValue();
+            value = (double)point.longValue();
         } else {
             final double doubleValue = point.doubleValue();
             if (doubleValue != doubleValue || Double.isInfinite(doubleValue)) {
