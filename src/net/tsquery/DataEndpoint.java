@@ -52,7 +52,7 @@ import java.util.*;
 public class DataEndpoint extends TsdbServlet {
 
     private static final long serialVersionUID = 1L;
-    private static final HashMap<String, Aggregator> _aggregators = new HashMap<String, Aggregator> (5);
+    private static final HashMap<String, Aggregator> _aggregators = new HashMap<>(5);
 
     static {
         _aggregators.put("sum", net.opentsdb.core.Aggregators.SUM);
@@ -139,7 +139,7 @@ public class DataEndpoint extends TsdbServlet {
             {
                 value = Integer.parseInt(strval);
             }
-            catch(NumberFormatException nfe)
+            catch(NumberFormatException ignored)
             {
             }
         }
@@ -163,7 +163,7 @@ public class DataEndpoint extends TsdbServlet {
         final JSONArray dataArray = new JSONArray();
         final int dpCount = plot.getDataPointsSize();
 
-        final TreeMap<Long, double[]> tsMap = new TreeMap<Long, double[]>();
+        final TreeMap<Long, double[]> tsMap = new TreeMap<>();
         final double[] weight = new double[dpCount];
 
         int dpIndex = 0;
@@ -196,8 +196,8 @@ public class DataEndpoint extends TsdbServlet {
         HashMap<Integer, Boolean> includeMap = null;
         // are we performing a topN lookup?
         if(topN > 0) {
-            includeMap = new HashMap<Integer, Boolean>(topN);
-            TreeMap<Double, Integer> weightMap = new TreeMap<Double, Integer>(Collections.reverseOrder());
+            includeMap = new HashMap<>(topN);
+            TreeMap<Double, Integer> weightMap = new TreeMap<>(Collections.reverseOrder());
             for(int i=0; i < dpCount; i++){
                 while(weightMap.containsKey(weight[i]))
                     weight[i] -= 0.00000001;
@@ -277,7 +277,7 @@ public class DataEndpoint extends TsdbServlet {
         final JSONObject plotObject = new JSONObject();
         JSONArray seriesArray = new JSONArray();
 
-        final TreeMap<Double, JSONObject> weightMap = new TreeMap<Double, JSONObject>(Collections.reverseOrder());
+        final TreeMap<Double, JSONObject> weightMap = new TreeMap<>(Collections.reverseOrder());
 
         for (DataPoints dataPoints : plot.getDataPoints()) {
             double weight = 0;
