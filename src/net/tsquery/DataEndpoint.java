@@ -119,7 +119,7 @@ public class DataEndpoint extends TsdbServlet {
             responseObj.put("loadtime", System.currentTimeMillis() - ts);
 
             ts = System.currentTimeMillis();
-            responseObj.put("series", PlotToJSON(plot, dygraphOutput, topN));
+            responseObj.put("series", PlotToJSON(plot, dygraphOutput, tsFrom, tsTo, topN));
             responseObj.put("serializationtime", System.currentTimeMillis() - ts);
 
             doSendResponse(request, out, responseObj.toJSONString());
@@ -147,17 +147,17 @@ public class DataEndpoint extends TsdbServlet {
         return value;
     }
 
-    public JSONObject PlotToJSON(Plot plot, boolean dygraphOutput, int topN) {
+    public JSONObject PlotToJSON(Plot plot, boolean dygraphOutput, long tsFrom, long tsTo, int topN) {
         if(dygraphOutput) {
-            return PlotToDygraphJSON(plot, topN);
+            return PlotToDygraphJSON(plot, tsFrom, tsTo, topN);
         } else {
-            return PlotToStandardJSON(plot, topN);
+            return PlotToStandardJSON(plot, tsFrom, tsTo, topN);
         }
 
     }
 
     @SuppressWarnings("unchecked")
-    private JSONObject PlotToDygraphJSON(Plot plot, int topN) {
+    private JSONObject PlotToDygraphJSON(Plot plot, long tsFrom, long tsTo, int topN) {
         final JSONObject plotObject = new JSONObject();
         final JSONArray nameArray = new JSONArray();
         final JSONArray dataArray = new JSONArray();
@@ -170,18 +170,21 @@ public class DataEndpoint extends TsdbServlet {
         for (DataPoints dataPoints : plot.getDataPoints()) {
 
             for (DataPoint point : dataPoints) {
-                long timestamp = point.timestamp() * 1000;
+                long timestamp = point.timestamp();
+                if(timestamp < tsFrom || timestamp > tsTo)
+                    continue;
 
-                if(!tsMap.containsKey(timestamp)) {
+                long tsMSec = timestamp * 1000;
+                if(!tsMap.containsKey(tsMSec)) {
                     double[] values = new double[dpCount];
                     values[dpIndex] = getValue(point);
-                    tsMap.put(timestamp, values);
+                    tsMap.put(tsMSec, values);
 
                     weight[dpIndex] += ((values[dpIndex]) / 1000000.0);
                 }
                 else {
                     //noinspection MismatchedReadAndWriteOfArray
-                    double[] values = tsMap.get(timestamp);
+                    double[] values = tsMap.get(tsMSec);
                     values[dpIndex] = getValue(point);
                     weight[dpIndex] += ((values[dpIndex]) / 1000000.0);
                 }
@@ -270,7 +273,7 @@ public class DataEndpoint extends TsdbServlet {
     }
 
     @SuppressWarnings("unchecked")
-    private JSONObject PlotToStandardJSON(Plot plot, int topN) {
+    private JSONObject PlotToStandardJSON(Plot plot, long tsFrom, long tsTo, int topN) {
         final JSONObject plotObject = new JSONObject();
         JSONArray seriesArray = new JSONArray();
 
@@ -290,9 +293,13 @@ public class DataEndpoint extends TsdbServlet {
             nameBuilder.setLength(nameBuilder.length() - 2);
 
             for (DataPoint point : dataPoints) {
+                long timestamp = point.timestamp();
+                if(timestamp < tsFrom || timestamp > tsTo)
+                    continue;
+
                 double dpValue = getValue(point);
                 JSONArray values = new JSONArray();
-                values.add(point.timestamp() * 1000);
+                values.add(timestamp * 1000);
                 values.add(dpValue);
 
                 weight += ((dpValue) / 1000000.0);
