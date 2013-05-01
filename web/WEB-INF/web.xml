@@ -39,4 +39,13 @@
         <url-pattern>/data</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>LastEndpoint</servlet-name>
+        <servlet-class>net.tsquery.LastEndpoint</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LastEndpoint</servlet-name>
+        <url-pattern>/last</url-pattern>
+    </servlet-mapping>
+
 </web-app>
