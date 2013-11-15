@@ -138,7 +138,13 @@ public class TsdbServlet extends HttpServlet {
             errObj.put("stacktrace", stackTrace.toString());
         }
 
-        return errObj.toJSONString();
+        String json = errObj.toJSONString();
+
+        String jsonCallback = request.getParameter("jsoncallback");
+        if((jsonCallback != null) && (!jsonCallback.isEmpty())) {
+            json = jsonCallback + "('" + json + "');";
+        }
+        return json;
     }
 
     @Override
