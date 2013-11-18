@@ -146,7 +146,7 @@ public class TsdbServlet extends HttpServlet {
         if((jsonCallback != null) && (!jsonCallback.isEmpty())) {
             json = jsonCallback + "('" + json + "');";
         }
-	
+
         return json;
     }
 
