@@ -70,6 +70,9 @@ public class TsdbServlet extends HttpServlet {
             HBaseConnection.configure(tsdbConf);
 
             String quorum = tsdbConf.getProperty("hbase.zookeeper.quorum","localhost");
+            String[] tokens = quorum.split(";:");
+            if(tokens.length > 0)
+                quorum = tokens[0];
 
             String returnStackTrace = tsdbConf.getProperty("hbase.zookeeper.quorum","localhost");
             if(returnStackTrace != null && returnStackTrace.equalsIgnoreCase("true"))
@@ -128,7 +131,7 @@ public class TsdbServlet extends HttpServlet {
     }
 
     @SuppressWarnings("unchecked")
-    protected String getErrorResponse(Throwable e) {
+    protected String getErrorResponse(HttpServletRequest request, Throwable e) {
         JSONObject errObj = new JSONObject();
         errObj.put("error", e.getMessage());
 
@@ -138,7 +141,13 @@ public class TsdbServlet extends HttpServlet {
             errObj.put("stacktrace", stackTrace.toString());
         }
 
-        return errObj.toJSONString();
+        String json = errObj.toJSONString();
+        String jsonCallback = request.getParameter("jsoncallback");
+        if((jsonCallback != null) && (!jsonCallback.isEmpty())) {
+            json = jsonCallback + "('" + json + "');";
+        }
+	
+        return json;
     }
 
     @Override

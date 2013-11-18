@@ -99,7 +99,7 @@ public class MetricHeaderEndpoint extends TsdbServlet {
                     + "metric: " + metricName + ", "
                     + "load time: " + loadTime + "ms");
         } catch (Exception e) {
-            out.println(getErrorResponse(e));
+            out.println(getErrorResponse(request, e));
         }
         out.close();
     }

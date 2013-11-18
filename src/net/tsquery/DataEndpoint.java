@@ -125,7 +125,7 @@ public class DataEndpoint extends TsdbServlet {
             doSendResponse(request, out, responseObj.toJSONString());
 
         } catch (Exception e) {
-            out.println(getErrorResponse(e));
+            out.println(getErrorResponse(request, e));
         }
         out.close();
     }
