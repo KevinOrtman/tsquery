@@ -133,7 +133,7 @@ public class TsdbServlet extends HttpServlet {
     @SuppressWarnings("unchecked")
     protected String getErrorResponse(HttpServletRequest request, Throwable e) {
         JSONObject errObj = new JSONObject();
-        errObj.put("error", e.getMessage());
+        errObj.put("error", e.getMessage().replace("'","`"));
 
         if(s_returnStackTrace) {
             StringWriter stackTrace = new StringWriter();
